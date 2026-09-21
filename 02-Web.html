@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internet e il Web — Unità B2.1</title>
+<meta name="description" content="Percorso interattivo su Internet, client-server, URL, crawler, HTTPS e linguaggi del Web">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F3EC;
+    --ink:#F6F3EC;
+    --panel:#FFFFFF;
+    --panel-2:#EFEBE0;
+    --paper:#FFFFFF;
+    --line:#D8D1C2;
+    --line-soft:#E7E1D2;
+    --text:#201E1B;
+    --text-dim:#4B463F;
+    --signal:#0B6E4F;
+    --signal-soft:#E4F0EA;
+    --alert:#B7402F;
+    --ok:#2451A3;
+    --font-display:'Space Grotesk', Arial, sans-serif;
+    --font-body:'Source Serif 4', Georgia, serif;
+    --font-mono:'JetBrains Mono', 'Fira Code', monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#F6F3EC; --panel:#FFFFFF; }
+  }
+  :root[data-theme="dark"]{ --bg:#F6F3EC; --panel:#FFFFFF; }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{ color:inherit; }
+  ::selection{ background:var(--signal); color:var(--ink); }
+
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:56px 56px;
+    opacity:.6;
+    -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 10%, #000 40%, transparent 85%);
+            mask-image:radial-gradient(ellipse 90% 70% at 50% 10%, #000 40%, transparent 85%);
+  }
+
+  section{
+    position:relative; z-index:1;
+    padding:160px 8vw 120px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  section.tight{ padding-top:120px; }
+
+  .kicker{
+    font-family:var(--font-mono);
+    font-size:15px;
+    color:var(--signal);
+    margin:0 0 18px;
+  }
+  h1,h2,h3{ font-family:var(--font-display); font-weight:400; margin:0; color:var(--text); }
+  h2{ font-size:clamp(34px,4.4vw,54px); line-height:1.12; max-width:16ch; }
+  .subtitle{
+    font-family:var(--font-body); font-size:18px; font-style:italic; color:var(--text-dim);
+    margin:10px 0 0; max-width:46ch;
+  }
+  .page-ref{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:13px;
+    color:var(--signal); margin-top:16px; padding-left:12px; border-left:2px solid var(--signal);
+  }
+  .page-ref.hero-ref{ color:var(--text-dim); border-left-color:var(--line); margin-top:26px; }
+  .lede{
+    font-size:clamp(18px,2vw,21px);
+    color:var(--text-dim);
+    max-width:62ch;
+    margin:22px 0 0;
+  }
+  .mono{ font-family:var(--font-mono); }
+
+  /* ---------- Nav (wire + pins) ---------- */
+  nav.wire-nav{
+    position:fixed; right:26px; top:50%; transform:translateY(-50%);
+    z-index:50;
+    display:flex; flex-direction:column; align-items:center;
+    gap:0;
+  }
+  nav.wire-nav .seg{ width:1px; height:26px; background:var(--line); }
+  nav.wire-nav button{
+    appearance:none; border:none; background:none; padding:9px 0; margin:0;
+    cursor:pointer; display:block; position:relative;
+  }
+  nav.wire-nav button .dot{
+    width:9px; height:9px; border-radius:50%;
+    border:1.5px solid var(--text-dim);
+    background:transparent;
+    display:block;
+    transition:background .25s, border-color .25s, transform .25s;
+  }
+  nav.wire-nav button.active .dot{
+    background:var(--signal); border-color:var(--signal);
+    transform:scale(1.35);
+  }
+  nav.wire-nav button .label{
+    position:absolute; right:22px; top:50%; transform:translateY(-50%);
+    font-family:var(--font-mono); font-size:12px; color:var(--text);
+    background:var(--panel); border:1px solid var(--line);
+    padding:5px 10px; border-radius:4px; white-space:nowrap;
+    opacity:0; pointer-events:none; transition:opacity .15s;
+  }
+  nav.wire-nav button:hover .label{ opacity:1; }
+  @media (max-width:860px){ nav.wire-nav{ display:none; } }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top:0; padding-bottom:0;
+    max-width:1180px;
+  }
+  .hero-tag{
+    font-family:var(--font-mono); font-size:15px; color:var(--text-dim);
+    display:flex; align-items:center; gap:10px; margin-bottom:28px;
+  }
+  .hero-tag .px{ width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 4px rgba(31,122,82,.15); }
+  .hero h1{ font-size:clamp(52px,9vw,108px); line-height:0.98; max-width:11ch; }
+  .hero .lede{ font-size:clamp(19px,2.2vw,24px); max-width:46ch; }
+  .scrollcue{
+    margin-top:64px; display:flex; align-items:center; gap:12px;
+    font-family:var(--font-mono); font-size:14px; color:var(--text-dim);
+  }
+  .scrollcue svg{ animation:bob 1.8s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(6px); } }
+
+  .hero-net{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .hero-net svg{ width:100%; height:100%; }
+  .hero-net .pulse{ animation:travel linear infinite; }
+  @keyframes travel{
+    0%{ offset-distance:0%; opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ offset-distance:100%; opacity:0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero-net .pulse{ animation:none; opacity:.55; }
+    .scrollcue svg{ animation:none; }
+  }
+
+  /* ---------- Panels & cards ---------- */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+  }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+  @media (max-width:860px){ .grid2{ grid-template-columns:1fr; } }
+
+  .stat-row{ display:flex; gap:14px; margin-top:34px; flex-wrap:wrap; }
+  .stat{
+    font-family:var(--font-mono); font-size:14px; color:var(--text);
+    border:1px solid var(--line); border-radius:6px; padding:10px 14px;
+  }
+  .stat b{ color:var(--signal); font-weight:600; }
+
+  /* ---------- Section: Internet network diagram ---------- */
+  .netmap{ position:relative; height:340px; }
+  .netmap svg{ width:100%; height:100%; overflow:visible; }
+  .netmap .us-outline{ fill:var(--panel-2); stroke:var(--line); stroke-width:1.5; }
+  .netmap .node{ fill:var(--text); stroke:#fff; stroke-width:1.5; }
+  .netmap .node-later{ fill:var(--ok); stroke:#fff; stroke-width:1; }
+  .netmap .wire{ stroke:var(--alert); stroke-width:1.5; fill:none; opacity:.75; }
+  .netmap .wire-later{ stroke:var(--line); stroke-width:1.3; fill:none; }
+  .netmap .cap{ fill:var(--text-dim); font-family:var(--font-mono); font-size:11px; font-weight:600; }
+  .netmap .cap-later{ fill:var(--ok); font-family:var(--font-mono); font-size:9px; font-weight:500; }
+  .netmap .pulse2{ fill:var(--alert); }
+  .netmap .pulse-later{ fill:var(--ok); }
+  .netmap-legend{ display:flex; gap:22px; margin-top:14px; font-size:13px; color:var(--text-dim); flex-wrap:wrap; }
+  .netmap-legend .item{ display:flex; align-items:center; gap:8px; }
+  .netmap-legend .sw{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .elements-list{ display:flex; flex-direction:column; gap:10px; margin:18px 0 8px; font-size:15px; color:var(--text-dim); }
+  .elements-list .item{ display:flex; align-items:flex-start; gap:10px; }
+  .elements-list .sw{ width:10px; height:10px; border-radius:50%; display:inline-block; margin-top:6px; flex:none; }
+  .caption-note{ font-size:15px; color:var(--text-dim); margin-top:18px; }
+
+  /* ---------- Elementi di una rete informatica ---------- */
+  .elements-row{ display:flex; align-items:center; justify-content:center; gap:18px; margin-top:32px; flex-wrap:wrap; }
+  .element-card{
+    width:180px; min-height:190px; padding:22px; border-radius:10px;
+    background:var(--panel); border:1px solid var(--line);
+    display:flex; flex-direction:column; gap:10px; align-items:center; text-align:center;
+  }
+  .element-card .num{
+    width:26px; height:26px; border-radius:50%; background:var(--panel-2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; color:var(--text-dim);
+  }
+  .element-card .tag{ font-family:var(--font-body); font-size:16px; font-weight:600; color:var(--text); }
+  .element-card .desc{ font-size:13px; color:var(--text-dim); }
+  .element-op{ font-family:var(--font-mono); font-size:28px; color:var(--text-dim); }
+  .element-result{
+    width:190px; min-height:190px; padding:22px; border-radius:10px;
+    background:var(--panel-2); border:1px solid var(--signal);
+    display:flex; flex-direction:column; gap:10px; align-items:center; text-align:center;
+  }
+  .element-result .tag{ font-family:var(--font-mono); font-size:20px; font-weight:600; color:var(--signal); }
+
+  /* ---------- Illustrazione rete locale domestica (Figura 2) ---------- */
+  .net-illust{ margin-top:32px; }
+  .net-illust svg{ width:100%; height:auto; }
+  .net-illust .device{ stroke:var(--text); fill:none; stroke-width:2; }
+  .net-illust .router-icon{ stroke:var(--ok); fill:none; stroke-width:2; }
+  .net-illust .globe-icon{ stroke:var(--text-dim); fill:none; stroke-width:1.8; }
+  .net-illust .link{ stroke:var(--signal); stroke-width:1.8; }
+  .net-illust .out-link{ stroke:var(--line); stroke-width:1.6; stroke-dasharray:4 3; }
+  .net-illust .zone-home{ fill:var(--panel-2); stroke:var(--line); stroke-width:1.5; }
+  .net-illust .zone-net{ fill:var(--signal-soft); stroke:var(--signal); stroke-width:1.5; }
+  .net-illust .lbl{ fill:var(--text-dim); font-family:var(--font-mono); font-size:12px; }
+  .net-illust .lbl-strong{ fill:var(--text); font-family:var(--font-mono); font-size:12px; font-weight:600; }
+
+  /* ---------- Client-server demo (in stile Figura 4 del libro) ---------- */
+  .demo{ margin-top:56px; }
+  .cs-scroll{ overflow-x:auto; padding-bottom:6px; }
+  .cs-diagram{
+    display:flex; align-items:center; gap:0; min-width:920px; padding:12px 4px 28px;
+  }
+  .cs-node{ display:flex; flex-direction:column; align-items:center; gap:10px; width:150px; flex:none; }
+  .cs-node.device{ width:170px; }
+  .cs-label-top{ font-family:var(--font-mono); font-size:13px; color:var(--text-dim); text-align:center; }
+  .cs-icon{ color:var(--text); width:56px; height:56px; }
+  .cs-icon.small{ width:40px; height:40px; color:var(--signal); }
+  .cs-label-bottom{ font-family:var(--font-body); font-size:17px; font-weight:600; color:var(--text); }
+  .cs-label-under{ font-family:var(--font-mono); font-size:13px; color:var(--text-dim); text-align:center; max-width:120px; }
+  .cs-status{ font-family:var(--font-mono); font-size:13px; color:var(--text-dim); min-height:20px; text-align:center; }
+  .cs-status.ok{ color:var(--ok); }
+  .cs-status.err{ color:var(--alert); }
+  .cs-connector{ flex:none; width:56px; height:1.5px; background:var(--line); margin:0 -4px; align-self:center; }
+  .cs-channel{ flex:1; min-width:280px; display:flex; flex-direction:column; gap:14px; padding:0 18px; }
+  .cs-arrow-row{ display:flex; align-items:center; gap:10px; }
+  .cs-arrow-row.res{ flex-direction:row-reverse; }
+  .cs-arrow-label{ font-family:var(--font-mono); font-size:13px; color:var(--text-dim); white-space:nowrap; }
+  .cs-arrow-line{ position:relative; flex:1; height:1.5px; background:var(--line); }
+  .cs-arrow-line::after{
+    content:""; position:absolute; top:50%; width:0; height:0;
+    border-top:5px solid transparent; border-bottom:5px solid transparent;
+  }
+  .cs-arrow-line.req::after{ right:-1px; transform:translateY(-50%); border-left:7px solid var(--line); }
+  .cs-arrow-line.res::after{ left:-1px; transform:translateY(-50%); border-right:7px solid var(--line); }
+  .cs-pulse{
+    position:absolute; top:50%; left:0; width:11px; height:11px; border-radius:50%;
+    background:var(--signal); transform:translate(-50%,-50%); opacity:0;
+    box-shadow:0 0 10px 2px rgba(143,90,12,.45);
+  }
+  .cs-pulse.moveright{ animation:moveright .9s ease-in-out forwards; }
+  .cs-pulse.moveleft{ animation:moveleft .9s ease-in-out forwards; }
+  @keyframes moveright{ 0%{ left:0; opacity:0; } 10%{ opacity:1; } 90%{ opacity:1; } 100%{ left:100%; opacity:0; } }
+  @keyframes moveleft{ 0%{ left:100%; opacity:0; } 10%{ opacity:1; } 90%{ opacity:1; } 100%{ left:0; opacity:0; } }
+  .cs-controls{ display:flex; gap:14px; margin-top:8px; flex-wrap:wrap; }
+  .btn{
+    font-family:var(--font-mono); font-size:14px; color:var(--text);
+    background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    padding:12px 18px; cursor:pointer; transition:border-color .2s, background .2s;
+  }
+  .btn:hover{ border-color:var(--signal); }
+  .btn:active{ transform:translateY(1px); }
+  .btn.primary{ border-color:var(--signal); color:var(--ink); background:var(--signal); font-weight:600; }
+  .btn.primary:hover{ background:#095A40; }
+  .cs-log{ margin-top:18px; font-family:var(--font-mono); font-size:14px; color:var(--text-dim); min-height:22px; }
+  .cs-log .ok{ color:var(--ok); }
+  .cs-log .err{ color:var(--alert); }
+
+  /* ---------- WWW cards ---------- */
+  .www-row{ display:flex; align-items:center; justify-content:center; gap:20px; margin-top:48px; flex-wrap:wrap; }
+  .www-card{ width:180px; height:180px; cursor:pointer; perspective:1000px; }
+  .www-card .card-inner{ position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .www-card.flipped .card-inner{ transform:rotateY(180deg); }
+  .www-card .face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; padding:24px;
+    background:var(--panel); border:1px solid var(--line);
+    display:flex; flex-direction:column; gap:10px; justify-content:center; align-items:center; text-align:center;
+    transition:border-color .2s;
+  }
+  .www-card.seen .face.front{ border-color:var(--signal); }
+  .www-card .face.back{ transform:rotateY(180deg); background:var(--panel-2); }
+  .www-card .tag{ font-family:var(--font-mono); font-size:26px; font-weight:600; color:var(--text); }
+  .www-card .expand{ font-size:13px; color:var(--text-dim); }
+  .www-card .prompt{ font-size:13px; color:var(--text-dim); }
+  .www-card .desc{ font-size:14px; color:var(--text-dim); }
+  .www-op{ font-family:var(--font-mono); font-size:30px; color:var(--text-dim); }
+  .www-result{
+    width:190px; min-height:180px; padding:24px; border-radius:10px;
+    background:var(--panel-2); border:1px solid var(--line);
+    display:flex; flex-direction:column; gap:10px; justify-content:center; align-items:center; text-align:center;
+    transition:border-color .3s, box-shadow .3s;
+  }
+  .www-result .tag{ font-family:var(--font-mono); font-size:28px; font-weight:600; color:var(--text-dim); transition:color .3s; }
+  .www-result.complete{ border-color:var(--signal); box-shadow:0 0 24px -4px rgba(143,90,12,.35); }
+  .www-result.complete .tag{ color:var(--signal); }
+  .www-hint{ margin-top:22px; font-size:14px; color:var(--text-dim); }
+
+  /* ---------- URL anatomy ---------- */
+  .url-bar{
+    margin-top:52px; padding:20px 24px; border-radius:8px;
+    background:var(--panel); border:1px solid var(--line);
+    font-family:var(--font-mono); font-size:clamp(15px,2.6vw,24px);
+    display:flex; flex-wrap:wrap;
+  }
+  .url-bar .seg{ padding:3px 2px; border-bottom:2px solid transparent; cursor:pointer; transition:border-color .15s, color .15s; color:var(--text-dim); }
+  .url-bar .seg:hover, .url-bar .seg.active{ color:var(--text); border-color:var(--signal); }
+  .url-caption{
+    margin-top:22px; min-height:64px; padding:18px 22px;
+    background:var(--panel-2); border-left:2px solid var(--signal); border-radius:0 8px 8px 0;
+  }
+  .url-caption .name{ font-family:var(--font-mono); font-size:14px; color:var(--signal); margin-bottom:4px; }
+  .url-caption .expl{ font-size:15px; color:var(--text-dim); }
+
+  /* ---------- Crawler ---------- */
+  .crawl-wrap{ margin-top:52px; display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; }
+  .crawl-map-col{ flex:2; min-width:320px; }
+  .crawl-map{ position:relative; height:300px; }
+  .crawl-map svg{ width:100%; height:100%; overflow:visible; }
+  .crawl-map .cnode{ fill:var(--panel-2); stroke:var(--line); stroke-width:1.5; transition:fill .3s, stroke .3s; }
+  .crawl-map .cnode.visited{ fill:var(--signal-soft); stroke:var(--signal); }
+  .crawl-map .cwire{ stroke:var(--line); stroke-width:1.5; fill:none; }
+  .crawl-map .clabel{ font-family:var(--font-mono); font-size:11px; fill:var(--text-dim); }
+  .spider{ position:absolute; width:22px; height:22px; transform:translate(-50%,-50%); transition:left .6s ease, top .6s ease; }
+  .crawl-controls{ display:flex; align-items:center; gap:18px; margin-top:28px; flex-wrap:wrap; }
+  .crawl-count{ font-family:var(--font-mono); font-size:15px; color:var(--text-dim); }
+  .crawl-count b{ color:var(--signal); }
+  .crawl-db{ flex:1; min-width:230px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px; align-self:stretch; }
+  .crawl-db-head{ display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:13px; color:var(--text-dim); margin:0 0 12px; padding-bottom:10px; border-bottom:1px solid var(--line); }
+  .crawl-db-head svg{ width:16px; height:16px; color:var(--text-dim); flex:none; }
+  .crawl-db-list{ display:flex; flex-direction:column; gap:6px; min-height:180px; }
+  .db-entry{ display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12.5px; color:var(--text); background:var(--panel-2); border-radius:4px; padding:7px 9px; animation:dbIn .4s ease; }
+  .db-entry .dot{ width:6px; height:6px; border-radius:50%; background:var(--ok); flex:none; }
+  .db-empty{ font-size:12.5px; color:var(--text-dim); font-style:italic; }
+  @keyframes dbIn{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:translateY(0); } }
+
+  /* ---------- HTTPS ---------- */
+  .https-wrap{ margin-top:52px; display:grid; grid-template-columns:auto 1fr; gap:56px; align-items:center; }
+  @media (max-width:760px){ .https-wrap{ grid-template-columns:1fr; gap:36px; } }
+  .toggle{
+    display:inline-flex; border:1px solid var(--line); border-radius:100px; padding:4px; gap:4px;
+    font-family:var(--font-mono); font-size:14px; width:fit-content;
+  }
+  .toggle button{
+    appearance:none; border:none; border-radius:100px; padding:10px 20px; cursor:pointer;
+    background:transparent; color:var(--text-dim); font-family:var(--font-mono); font-size:14px;
+    transition:background .2s, color .2s;
+  }
+  .toggle button.on{ background:var(--signal); color:var(--ink); font-weight:600; }
+  .lock-scene{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .lock-scene svg{ width:64px; height:64px; }
+  .lock-status{ font-family:var(--font-mono); font-size:14px; text-align:center; }
+  .lock-status.secure{ color:var(--ok); }
+  .lock-status.insecure{ color:var(--alert); }
+  .packet-line{ position:relative; height:64px; border-top:1.5px dashed var(--line); margin-top:8px; }
+  .packet{
+    position:absolute; top:-13px; left:0; font-family:var(--font-mono); font-size:14px;
+    padding:5px 10px; border-radius:5px; background:var(--panel-2); border:1px solid var(--line);
+    animation:packetmove 2.6s linear infinite;
+  }
+  @keyframes packetmove{ 0%{ left:0%; opacity:0; } 8%{ opacity:1; } 92%{ opacity:1; } 100%{ left:88%; opacity:0; } }
+  @media (prefers-reduced-motion: reduce){ .packet{ animation:none; left:40%; opacity:1; } }
+
+  /* ---------- Languages demo ---------- */
+  .lang-wrap{ margin-top:52px; display:grid; grid-template-columns:260px 1fr; gap:40px; }
+  @media (max-width:820px){ .lang-wrap{ grid-template-columns:1fr; } }
+  .lang-toggles{ display:flex; flex-direction:column; gap:12px; }
+  .lang-toggle{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:14px 16px; border:1px solid var(--line); border-radius:8px; background:var(--panel);
+  }
+  .lang-toggle .name{ font-family:var(--font-mono); font-size:14px; }
+  .lang-toggle .job{ font-size:12px; color:var(--text-dim); margin-top:2px; }
+  .switch{
+    width:42px; height:24px; border-radius:100px; background:var(--line); position:relative;
+    cursor:pointer; border:none; flex:none;
+  }
+  .switch .knob{ position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:var(--text-dim); transition:left .2s, background .2s; }
+  .switch.on{ background:var(--signal-soft); }
+  .switch.on .knob{ left:21px; background:var(--signal); }
+  .switch[disabled]{ cursor:default; opacity:.55; }
+
+  .browser{ border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--paper); }
+  .browser .bar{ background:var(--panel-2); padding:10px 14px; display:flex; gap:8px; align-items:center; border-bottom:1px solid var(--line); }
+  .browser .dotb{ width:9px; height:9px; border-radius:50%; background:var(--line); }
+  .browser .addr{ margin-left:8px; font-family:var(--font-mono); font-size:12px; color:var(--text-dim); }
+  .browser .stage{ padding:36px 32px; min-height:220px; color:#2b2b26; font-family:Georgia, serif; }
+  .stage.css-on{ background:linear-gradient(160deg,#fff 0%,#f1ece0 100%); }
+  .stage h4{ font-family:Georgia, serif; margin:0 0 10px; font-size:26px; color:#1b1b16; }
+  .stage.css-on h4{ font-family:var(--font-display); color:#14213D; font-size:32px; }
+  .stage p{ margin:0 0 18px; font-size:16px; line-height:1.5; }
+  .demo-btn{
+    font-family:Arial, sans-serif; font-size:14px; padding:8px 14px; border:1px solid #999; background:#eee; cursor:default;
+  }
+  .stage.css-on .demo-btn{
+    font-family:var(--font-body); font-weight:600; color:#fff; background:#C0392B; border:none;
+    border-radius:8px; padding:12px 22px; cursor:pointer;
+  }
+  .stage.js-on .demo-btn{ cursor:pointer; }
+  .demo-count{ margin-left:12px; font-family:var(--font-mono); font-size:14px; color:#555; }
+  .js-hint{ font-size:13px; color:#8a8577; margin-top:10px; }
+
+  /* ---------- Finale ---------- */
+  .finale{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:64px 6vw; margin:0 8vw 140px; max-width:1180px; position:relative; z-index:1;
+  }
+  .finale h2{ max-width:16ch; }
+  .glossary{ display:flex; flex-wrap:wrap; gap:10px; margin-top:36px; }
+  .chip{
+    font-family:var(--font-mono); font-size:14px; color:var(--text);
+    border:1px solid var(--line); border-radius:100px; padding:9px 16px; cursor:pointer;
+    background:var(--panel-2); transition:border-color .2s;
+  }
+  .chip:hover{ border-color:var(--signal); }
+  .chip.open{ border-color:var(--signal); }
+  .glossary-def{
+    margin-top:18px; padding:16px 20px; background:var(--panel-2); border-radius:8px;
+    font-size:15px; color:var(--text-dim); display:none;
+  }
+  .glossary-def.show{ display:block; }
+  .glossary-def b{ color:var(--text); }
+
+  .closing{ margin-top:56px; padding-top:36px; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+  .closing .next{ font-family:var(--font-mono); font-size:14px; color:var(--text-dim); }
+  .closing .next b{ color:var(--signal); }
+
+  footer{ position:relative; z-index:1; text-align:center; padding:40px 20px 60px; font-family:var(--font-mono); font-size:13px; color:var(--text-dim); }
+
+  .back-index{
+    position:fixed; top:20px; left:20px; z-index:60;
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:13px; font-weight:500;
+    color:var(--text-dim); text-decoration:none;
+    background:var(--panel); border:1px solid var(--line); border-radius:999px;
+    padding:8px 14px 8px 12px;
+    transition:border-color .15s, color .15s;
+  }
+  .back-index:hover{ border-color:var(--signal); color:var(--signal); }
+</style>
+</head>
+<body>
+
+<a class="back-index" href="index.html">&larr; Indice</a>
+
+<div class="bg-grid" aria-hidden="true"></div>
+
+<nav class="wire-nav" id="wireNav" aria-label="Navigazione sezioni">
+  <button data-target="hero" class=""><span class="dot"></span><span class="label">Inizio</span></button>
+  <div class="seg"></div>
+  <button data-target="internet" class="active"><span class="dot"></span><span class="label">Internet</span></button>
+  <div class="seg"></div>
+  <button data-target="client-server" class=""><span class="dot"></span><span class="label">Client-server</span></button>
+  <div class="seg"></div>
+  <button data-target="www" class=""><span class="dot"></span><span class="label">WWW</span></button>
+  <div class="seg"></div>
+  <button data-target="url" class=""><span class="dot"></span><span class="label">URL</span></button>
+  <div class="seg"></div>
+  <button data-target="crawler" class=""><span class="dot"></span><span class="label">Motori di ricerca</span></button>
+  <div class="seg"></div>
+  <button data-target="https" class=""><span class="dot"></span><span class="label">HTTP / HTTPS</span></button>
+  <div class="seg"></div>
+  <button data-target="linguaggi" class=""><span class="dot"></span><span class="label">Linguaggi</span></button>
+  <div class="seg"></div>
+  <button data-target="finale" class=""><span class="dot"></span><span class="label">Riepilogo</span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-net" aria-hidden="true">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <path id="hp1" d="M -50 620 C 300 520, 500 700, 900 560 S 1300 480, 1500 560" fill="none" stroke="#E7E1D2" stroke-width="1.5"></path>
+      <path id="hp2" d="M -80 300 C 250 380, 480 200, 820 320 S 1250 260, 1400 200" fill="none" stroke="#E7E1D2" stroke-width="1.5"></path>
+      <path id="hp3" d="M 100 -40 C 200 200, 60 420, 260 620 S 420 820, 380 900" fill="none" stroke="#E7E1D2" stroke-width="1.5"></path>
+      <circle class="pulse" r="3.2" fill="#0B6E4F" style="offset-path:path('M -50 620 C 300 520, 500 700, 900 560 S 1300 480, 1500 560'); animation-duration:9s; animation-delay:0s;"></circle>
+      <circle class="pulse" r="3.2" fill="#0B6E4F" style="offset-path:path('M -80 300 C 250 380, 480 200, 820 320 S 1250 260, 1400 200'); animation-duration:12s; animation-delay:2.5s;"></circle>
+      <circle class="pulse" r="2.6" fill="#0B6E4F" style="offset-path:path('M 100 -40 C 200 200, 60 420, 260 620 S 420 820, 380 900'); animation-duration:10s; animation-delay:5s;"></circle>
+      <circle class="pulse" r="2.6" fill="#0B6E4F" style="offset-path:path('M -50 620 C 300 520, 500 700, 900 560 S 1300 480, 1500 560'); animation-duration:9s; animation-delay:4.5s;"></circle>
+    </svg>
+  </div>
+  <h1>Dentro al Web</h1>
+  <p class="page-ref hero-ref">Unità B2 · Linguaggi HTML e CSS — pp. 158-165</p>
+  <p class="lede">Prima di scrivere una riga di HTML, guardiamo cosa succede davvero quando apri una pagina: chi parla con chi, con quali regole, lungo quali fili.</p>
+  <div class="scrollcue">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 5L8 11L14 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    scorri per iniziare
+  </div>
+</section>
+
+<!-- INTERNET -->
+<section id="internet">
+  <h2>Internet</h2>
+  <p class="subtitle">Nascita e infrastruttura di una rete pubblica</p>
+  <p class="page-ref">p. 159</p>
+  <p class="lede">Internet nasce nel 1969 da ARPANET, la rete costruita in piena guerra fredda dall'agenzia statunitense DARPA. Non è un'invenzione singola: sono milioni di computer collegati da cavi, WiFi e satelliti, che si scambiano dati attraverso router e switch.</p>
+
+  <div class="netmap" aria-hidden="true">
+    <svg viewBox="0 0 900 340">
+      <path class="us-outline" d="M42,55 L30,140 L61,220 L111,270 L180,285 L280,292 L380,298 L431,318 L493,302 L550,312 L606,298 L687,302 L725,330 L762,298 L750,255 L787,220 L762,180 L800,145 L837,105 L875,70 L900,25 L831,35 L719,30 L618,50 L531,28 L368,25 L205,32 L105,45 Z"></path>
+
+      <path class="wire-later" d="M45,164 L58,148"></path>
+      <path class="wire-later" d="M45,164 L35,145"></path>
+      <path class="wire-later" d="M45,164 L60,178"></path>
+      <path class="wire-later" d="M45,164 L68,160"></path>
+      <path class="wire-later" d="M105,212 L118,220"></path>
+      <path class="wire-later" d="M105,212 L130,228"></path>
+      <path class="wire-later" d="M203,117 L255,205"></path>
+      <path class="wire-later" d="M255,205 L560,130"></path>
+      <path class="wire-later" d="M560,130 L635,135"></path>
+      <path class="wire-later" d="M635,135 L700,120"></path>
+      <path class="wire-later" d="M700,120 L770,115"></path>
+      <path class="wire-later" d="M770,115 L810,75"></path>
+      <path class="wire-later" d="M810,75 L825,85"></path>
+      <path class="wire-later" d="M770,115 L795,95"></path>
+
+      <path class="wire" d="M105,212 L45,164"></path>
+      <path class="wire" d="M45,164 L203,117"></path>
+      <path class="wire" d="M105,212 L82,207"></path>
+      <path class="wire" d="M82,207 L45,164"></path>
+
+      <circle class="node-later" cx="58" cy="148" r="4"></circle>
+      <circle class="node-later" cx="35" cy="145" r="4"></circle>
+      <circle class="node-later" cx="60" cy="178" r="4"></circle>
+      <circle class="node-later" cx="68" cy="160" r="4"></circle>
+      <circle class="node-later" cx="118" cy="220" r="4"></circle>
+      <circle class="node-later" cx="130" cy="228" r="4"></circle>
+      <circle class="node-later" cx="255" cy="205" r="4"></circle>
+      <circle class="node-later" cx="560" cy="130" r="4"></circle>
+      <circle class="node-later" cx="635" cy="135" r="4"></circle>
+      <circle class="node-later" cx="700" cy="120" r="4"></circle>
+      <circle class="node-later" cx="770" cy="115" r="4"></circle>
+      <circle class="node-later" cx="810" cy="75" r="4"></circle>
+      <circle class="node-later" cx="825" cy="85" r="4"></circle>
+      <circle class="node-later" cx="795" cy="95" r="4"></circle>
+      <text class="cap-later" x="262" y="209">KIRTLAND</text>
+      <text class="cap-later" x="530" y="122">ILLINOIS</text>
+      <text class="cap-later" x="612" y="128">WPAFB</text>
+      <text class="cap-later" x="678" y="112">CMU</text>
+      <text class="cap-later" x="748" y="108">RUTGERS</text>
+      <text class="cap-later" x="817" y="68">MIT</text>
+      <text class="cap-later" x="832" y="83">HARVARD</text>
+
+      <circle class="node" cx="105" cy="212" r="7"></circle>
+      <circle class="node" cx="45" cy="164" r="7"></circle>
+      <circle class="node" cx="82" cy="207" r="7"></circle>
+      <circle class="node" cx="203" cy="117" r="7"></circle>
+      <text class="cap" x="112" y="234">UCLA</text>
+      <text class="cap" x="2" y="152">STANFORD (SRI)</text>
+      <text class="cap" x="8" y="234">UCSB</text>
+      <text class="cap" x="213" y="102">UTAH</text>
+      <circle class="pulse2" r="3" style="offset-path:path('M105,212 L45,164'); animation:travel 4.2s linear infinite;"></circle>
+      <circle class="pulse2" r="3" style="offset-path:path('M45,164 L203,117'); animation:travel 5s linear infinite; animation-delay:1s;"></circle>
+      <circle class="pulse2" r="3" style="offset-path:path('M105,212 L82,207'); animation:travel 3s linear infinite; animation-delay:.4s;"></circle>
+      <circle class="pulse2" r="3" style="offset-path:path('M82,207 L45,164'); animation:travel 3.6s linear infinite; animation-delay:2s;"></circle>
+
+      <circle class="pulse-later" r="2.4" style="offset-path:path('M45,164 L58,148'); animation:travel 2.6s linear infinite; animation-delay:.2s;"></circle>
+      <circle class="pulse-later" r="2.4" style="offset-path:path('M45,164 L35,145'); animation:travel 2.9s linear infinite; animation-delay:1.1s;"></circle>
+      <circle class="pulse-later" r="2.4" style="offset-path:path('M45,164 L60,178'); animation:travel 2.4s linear infinite; animation-delay:1.8s;"></circle>
+      <circle class="pulse-later" r="2.4" style="offset-path:path('M45,164 L68,160'); animation:travel 3.1s linear infinite; animation-delay:.6s;"></circle>
+      <circle class="pulse-later" r="2.4" style="offset-path:path('M105,212 L118,220'); animation:travel 2.3s linear infinite; animation-delay:1.4s;"></circle>
+      <circle class="pulse-later" r="2.4" style="offset-path:path('M105,212 L130,228'); animation:travel 2.7s linear infinite; animation-delay:.3s;"></circle>
+      <circle class="pulse-later" r="2.6" style="offset-path:path('M203,117 L255,205'); animation:travel 3.8s linear infinite; animation-delay:1.6s;"></circle>
+      <circle class="pulse-later" r="2.6" style="offset-path:path('M255,205 L560,130'); animation:travel 6.5s linear infinite; animation-delay:.5s;"></circle>
+      <circle class="pulse-later" r="2.6" style="offset-path:path('M560,130 L635,135'); animation:travel 3s linear infinite; animation-delay:2.2s;"></circle>
+      <circle class="pulse-later" r="2.6" style="offset-path:path('M635,135 L700,120'); animation:travel 3.2s linear infinite; animation-delay:.9s;"></circle>
+      <circle class="pulse-later" r="2.6" style="offset-path:path('M700,120 L770,115'); animation:travel 3.4s linear infinite; animation-delay:1.9s;"></circle>
+      <circle class="pulse-later" r="2.6" style="offset-path:path('M770,115 L810,75'); animation:travel 3.6s linear infinite; animation-delay:.1s;"></circle>
+      <circle class="pulse-later" r="2.4" style="offset-path:path('M810,75 L825,85'); animation:travel 2s linear infinite; animation-delay:1.3s;"></circle>
+      <circle class="pulse-later" r="2.4" style="offset-path:path('M770,115 L795,95'); animation:travel 2.5s linear infinite; animation-delay:.7s;"></circle>
+    </svg>
+  </div>
+  <p class="caption-note">Sullo sfondo, gli Stati Uniti: i primi quattro nodi della Rete, nel 1969, erano concentrati sulla costa occidentale. Nel decennio successivo molti altri centri di ricerca e università si collegano, ed entro la fine degli anni '70 la Rete si estende da costa a costa.</p>
+  <div class="netmap-legend">
+    <div class="item"><span class="sw" style="background:var(--alert)"></span>i 4 nodi originari (1969)</div>
+    <div class="item"><span class="sw" style="background:var(--ok)"></span>alcuni dei nodi aggiunti negli anni '70</div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><b>1969</b> — nasce ARPANET, negli Stati Uniti</div>
+    <div class="stat"><b>1986</b> — l'Italia si collega: 4° paese europeo in Rete</div>
+    <div class="stat"><b>50 kbps</b> — la banda del primo collegamento</div>
+  </div>
+
+  <p class="caption-note" style="margin-top:40px">In generale, una rete informatica è fatta di tre elementi:</p>
+  <div class="elements-list">
+    <div class="item"><span class="sw" style="background:var(--text)"></span>1. Dispositivi elettronici — TV, laptop, tablet, smartphone…</div>
+    <div class="item"><span class="sw" style="background:var(--signal)"></span>2. Connessioni fisiche — cavi o WiFi tra i dispositivi e il router</div>
+    <div class="item"><span class="sw" style="background:var(--ok)"></span>3. Apparecchiature di rete — il router che smista i dati verso Internet</div>
+  </div>
+
+  <div class="panel net-illust">
+    <svg viewBox="0 0 760 300">
+      <rect class="zone-home" x="20" y="50" width="460" height="230" rx="12"></rect>
+      <rect class="zone-net" x="520" y="50" width="220" height="230" rx="12"></rect>
+      <text class="lbl-strong" x="250" y="32" text-anchor="middle">Rete locale (a casa)</text>
+      <text class="lbl-strong" x="630" y="32" text-anchor="middle">Internet</text>
+
+      <line class="link" x1="66" y1="107" x2="250" y2="210"></line>
+      <line class="link" x1="158" y1="115" x2="250" y2="210"></line>
+      <line class="link" x1="250" y1="121" x2="250" y2="210"></line>
+      <line class="link" x1="342" y1="121" x2="250" y2="210"></line>
+      <line class="link" x1="434" y1="121" x2="250" y2="210"></line>
+
+      <text class="lbl" x="66" y="63" text-anchor="middle">TV</text>
+      <g class="device" transform="translate(42,75)">
+        <rect x="2" y="4" width="44" height="28" rx="2"></rect>
+        <line x1="24" y1="32" x2="24" y2="40"></line>
+        <line x1="12" y1="42" x2="36" y2="42"></line>
+      </g>
+
+      <text class="lbl" x="158" y="63" text-anchor="middle">Laptop</text>
+      <g class="device" transform="translate(134,75)">
+        <rect x="6" y="4" width="36" height="24" rx="2"></rect>
+        <path d="M2 32 L46 32 L42 40 L6 40 Z"></path>
+      </g>
+
+      <text class="lbl" x="250" y="63" text-anchor="middle">Tablet</text>
+      <g class="device" transform="translate(226,77)">
+        <rect x="12" y="2" width="24" height="42" rx="3"></rect>
+        <circle cx="24" cy="38" r="1.4" fill="var(--text)"></circle>
+      </g>
+
+      <text class="lbl" x="342" y="63" text-anchor="middle">Smartphone</text>
+      <g class="device" transform="translate(320,87)">
+        <rect x="14" y="2" width="16" height="32" rx="3"></rect>
+        <circle cx="22" cy="28" r="1.2" fill="var(--text)"></circle>
+      </g>
+
+      <text class="lbl" x="434" y="63" text-anchor="middle">Smartphone</text>
+      <g class="device" transform="translate(412,87)">
+        <rect x="14" y="2" width="16" height="32" rx="3"></rect>
+        <circle cx="22" cy="28" r="1.2" fill="var(--text)"></circle>
+      </g>
+
+      <!-- Router -->
+      <g class="router-icon" transform="translate(220,200)">
+        <rect x="8" y="10" width="44" height="20" rx="2"></rect>
+        <line x1="18" y1="10" x2="12" y2="-4"></line>
+        <line x1="42" y1="10" x2="48" y2="-4"></line>
+        <circle cx="18" cy="20" r="1.6" fill="var(--ok)"></circle>
+        <circle cx="26" cy="20" r="1.6" fill="var(--ok)"></circle>
+        <circle cx="34" cy="20" r="1.6" fill="var(--ok)"></circle>
+      </g>
+      <text class="lbl-strong" x="250" y="254" text-anchor="middle">Router</text>
+
+      <!-- collegamento verso Internet -->
+      <line class="out-link" x1="272" y1="220" x2="610" y2="175"></line>
+      <g class="globe-icon" transform="translate(608,153)">
+        <circle cx="22" cy="22" r="20"></circle>
+        <ellipse cx="22" cy="22" rx="9" ry="20"></ellipse>
+        <line x1="2" y1="22" x2="42" y2="22"></line>
+      </g>
+    </svg>
+  </div>
+
+</section>
+
+<!-- CLIENT SERVER -->
+<section id="client-server">
+  <h2>L'architettura client-server</h2>
+  <p class="subtitle">Chi chiede, chi risponde</p>
+  <p class="page-ref">p. 160-161</p>
+  <p class="lede">Quasi tutti i servizi di Internet — il Web, la posta elettronica — si basano su un'architettura <b>client-server</b>: un client fa una richiesta, un server, sempre in ascolto, risponde.</p>
+
+  <div class="demo">
+    <div class="cs-scroll">
+      <div class="cs-diagram">
+        <div class="cs-node device">
+          <div class="cs-label-top">Programma client</div>
+          <svg class="cs-icon" viewBox="0 0 48 48" fill="none"><rect x="5" y="8" width="38" height="25" rx="2" stroke="currentColor" stroke-width="2"></rect><line x1="24" y1="33" x2="24" y2="39" stroke="currentColor" stroke-width="2"></line><line x1="15" y1="41" x2="33" y2="41" stroke="currentColor" stroke-width="2"></line></svg>
+          <div class="cs-label-bottom">Client</div>
+          <div class="cs-status err" id="clientStatus">risposta ricevuta</div>
+        </div>
+
+        <div class="cs-connector"></div>
+
+        <div class="cs-node">
+          <svg class="cs-icon small" viewBox="0 0 48 48" fill="none"><rect x="6" y="11" width="36" height="27" rx="2" stroke="currentColor" stroke-width="2"></rect><line x1="6" y1="18" x2="42" y2="18" stroke="currentColor" stroke-width="2"></line><circle cx="11.5" cy="14.5" r="1.4" fill="currentColor"></circle><circle cx="16" cy="14.5" r="1.4" fill="currentColor"></circle></svg>
+          <div class="cs-label-under">Interfaccia</div>
+        </div>
+
+        <div class="cs-channel">
+          <div class="cs-arrow-row req">
+            <span class="cs-arrow-label">richiesta (request)</span>
+            <div class="cs-arrow-line req"><div class="cs-pulse moveright" id="pulseReq"></div></div>
+          </div>
+          <div class="cs-arrow-row res">
+            <span class="cs-arrow-label">risposta (response)</span>
+            <div class="cs-arrow-line res"><div class="cs-pulse moveleft" id="pulseRes"></div></div>
+          </div>
+        </div>
+
+        <div class="cs-node">
+          <svg class="cs-icon small" viewBox="0 0 48 48" fill="none"><circle cx="18" cy="25" r="9" stroke="currentColor" stroke-width="2"></circle><path d="M18 13v3M18 34v3M6 25h3M27 25h3M9.5 16.5l2.1 2.1M24.4 31.4l2.1 2.1M9.5 33.5l2.1-2.1M24.4 18.6l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path><ellipse cx="37" cy="16" rx="7" ry="3" stroke="currentColor" stroke-width="2"></ellipse><path d="M30 16v15c0 1.7 3.1 3 7 3s7-1.3 7-3V16" stroke="currentColor" stroke-width="2"></path><path d="M30 23.5c0 1.7 3.1 3 7 3s7-1.3 7-3" stroke="currentColor" stroke-width="2"></path></svg>
+          <div class="cs-label-under">Elaborazione e dati</div>
+        </div>
+
+        <div class="cs-connector"></div>
+
+        <div class="cs-node device">
+          <div class="cs-label-top">Programma server</div>
+          <svg class="cs-icon" viewBox="0 0 48 48" fill="none"><rect x="13" y="5" width="22" height="38" rx="2" stroke="currentColor" stroke-width="2"></rect><line x1="13" y1="16" x2="35" y2="16" stroke="currentColor" stroke-width="2"></line><line x1="13" y1="27" x2="35" y2="27" stroke="currentColor" stroke-width="2"></line><circle cx="18" cy="10.5" r="1.4" fill="currentColor"></circle><circle cx="18" cy="21.5" r="1.4" fill="currentColor"></circle><circle cx="18" cy="32.5" r="1.4" fill="currentColor"></circle></svg>
+          <div class="cs-label-bottom">Server</div>
+          <div class="cs-status" id="serverStatus">risorsa non trovata</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-controls">
+      <button class="btn primary" id="btnGood">Richiedi /pagina.html</button>
+      <button class="btn" id="btnBad">Richiedi /non-esiste.html</button>
+    </div>
+    <div class="cs-log" id="csLog">GET /non-esiste.html → <span class="err">404 Not Found</span></div>
+
+    <div class="browser" id="csBrowser" style="margin-top:22px; max-width:480px;">
+      <div class="bar" id="csBrowserAddr">www.esempio.it/non-esiste.html</div>
+      <div class="stage" id="csStage" style="min-height:110px; display:flex; align-items:center; justify-content:center; padding:20px 24px;"><div style="text-align:center"><svg viewBox="0 0 48 48" style="width:34px;height:34px;color:var(--alert)" fill="none"><circle cx="14" cy="24" r="8" stroke="currentColor" stroke-width="2"></circle><circle cx="34" cy="24" r="8" stroke="currentColor" stroke-width="2"></circle><line x1="20" y1="18" x2="28" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="28" y1="18" x2="20" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line></svg><h4 style="margin:6px 0 2px; font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:700; color:var(--alert)">404</h4><p style="margin:0; font-size:14px; font-weight:600; color:#333">Pagina non trovata</p><p style="margin:6px 0 0; font-size:12px; color:#777">La risorsa /non-esiste.html non è disponibile su questo server.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WWW -->
+<section id="www">
+  <h2>Il World Wide Web</h2>
+  <p class="subtitle">Le tre tecnologie che lo fondano</p>
+  <p class="page-ref">p. 161</p>
+  <p class="lede">Il <b>World Wide Web</b> — letteralmente «<b>ragnatela planetaria</b>», abbreviato in <b>WWW</b> o più comunemente <b>Web</b> — è il sistema di documenti ipertestuali e multimediali che si naviga in Internet passando da una pagina all'altra attraverso i collegamenti. Si basa su tre tecnologie distinte che, insieme, lo rendono possibile.</p>
+
+  <div class="www-row">
+    <div class="www-card" data-key="html">
+      <div class="card-inner">
+        <div class="face front"><div class="tag">HTML</div><div class="expand">HyperText Markup Language</div></div>
+        <div class="face back"><div class="desc">Il linguaggio di markup: struttura e contenuto</div></div>
+      </div>
+    </div>
+    <div class="www-op">+</div>
+    <div class="www-card" data-key="http">
+      <div class="card-inner">
+        <div class="face front"><div class="tag">HTTP</div><div class="expand">HyperText Transfer Protocol</div></div>
+        <div class="face back"><div class="desc">Il protocollo: le regole per trasmettere i documenti</div></div>
+      </div>
+    </div>
+    <div class="www-op">+</div>
+    <div class="www-card" data-key="url">
+      <div class="card-inner">
+        <div class="face front"><div class="tag">URL</div><div class="expand">Uniform Resource Locator</div></div>
+        <div class="face back"><div class="desc">Il sistema di indirizzi: dove trovare ogni risorsa</div></div>
+      </div>
+    </div>
+    <div class="www-op">=</div>
+    <div class="www-result" id="wwwResult">
+      <div class="tag">WWW</div>
+      <div class="desc" style="color:var(--text-dim)">World Wide Web</div>
+    </div>
+  </div>
+</section>
+
+<!-- URL -->
+<section id="url">
+  <h2>Che cos'è un URL?</h2>
+  <p class="subtitle">Le cinque parti di un indirizzo web</p>
+  <p class="page-ref">p. 162</p>
+  <p class="lede">Ogni risorsa del Web ha un indirizzo univoco.</p>
+
+  <div class="url-bar" id="urlBar">
+    <span class="seg" data-name="Protocollo" data-expl="La modalità di comunicazione tra client e server. HTTPS ne è la versione cifrata." tabindex="0">http://</span><span class="seg" data-name="Host name e domain name" data-expl="Identificano il server su cui risiede la risorsa e l'organizzazione che lo controlla." tabindex="0">www.example.com</span><span class="seg" data-name="Percorso" data-expl="Il percorso nel file system del server che porta alla risorsa richiesta." tabindex="0">/pagine/corso/</span><span class="seg" data-name="Filename" data-expl="Il nome del file richiesto. Se manca, il server serve la home page di default (index.html)." tabindex="0">indice.html</span><span class="seg active" data-name="Frammento" data-expl="Parte opzionale: indica un'àncora, un punto preciso all'interno del documento." tabindex="0">#capitolo2</span>
+  </div>
+  <div class="url-caption" id="urlCaption">
+    <div class="name">Frammento</div>
+    <div class="expl">Parte opzionale: indica un'àncora, un punto preciso all'interno del documento.</div>
+  </div>
+</section>
+
+<!-- CRAWLER -->
+<section id="crawler">
+  <h2>L'accesso alle pagine web e i motori di ricerca</h2>
+  <p class="subtitle">Come funziona uno spider</p>
+  <p class="page-ref">p. 163</p>
+  <p class="lede">I motori di ricerca usano programmi automatici, gli <b>spider</b> (o web crawler), che saltano da un link all'altro per indicizzare le pagine pubbliche.</p>
+
+  <div class="crawl-wrap">
+    <div class="crawl-map-col">
+      <div class="crawl-map">
+        <svg viewBox="0 0 900 300">
+          <path class="cwire" d="M120 150 L320 80"></path>
+          <path class="cwire" d="M320 80 L520 150"></path>
+          <path class="cwire" d="M520 150 L720 90"></path>
+          <path class="cwire" d="M320 80 L340 230"></path>
+          <path class="cwire" d="M520 150 L560 240"></path>
+          <path class="cwire" d="M720 90 L780 220"></path>
+          <circle class="cnode visited" data-id="0" cx="120" cy="150" r="9"></circle>
+          <circle class="cnode visited" data-id="1" cx="320" cy="80" r="9"></circle>
+          <circle class="cnode visited" data-id="2" cx="520" cy="150" r="9"></circle>
+          <circle class="cnode visited" data-id="3" cx="720" cy="90" r="9"></circle>
+          <circle class="cnode visited" data-id="4" cx="340" cy="230" r="9"></circle>
+          <circle class="cnode visited" data-id="5" cx="560" cy="240" r="9"></circle>
+          <circle class="cnode visited" data-id="6" cx="780" cy="220" r="9"></circle>
+          <text class="clabel" x="98" y="176">home</text>
+          <text class="clabel" x="298" y="60">/chi-siamo</text>
+          <text class="clabel" x="498" y="130">/blog</text>
+          <text class="clabel" x="698" y="70">/prodotti</text>
+          <text class="clabel" x="316" y="256">/blog/1</text>
+          <text class="clabel" x="536" y="266">/blog/2</text>
+          <text class="clabel" x="748" y="246">/contatti</text>
+        </svg>
+        <div class="spider" id="spider" style="left: 86.6667%; top: 73.3333%;">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="#0B6E4F"></circle><g stroke="#0B6E4F" stroke-width="1.4" stroke-linecap="round"><path d="M12 8 L4 4"></path><path d="M12 8 L20 4"></path><path d="M12 12 L2 12"></path><path d="M12 12 L22 12"></path><path d="M12 16 L4 20"></path><path d="M12 16 L20 20"></path></g></svg>
+        </div>
+      </div>
+      <div class="crawl-controls">
+        <button class="btn primary" id="btnCrawl">Avvia la scansione</button>
+        <button class="btn" id="btnCrawlReset">Reimposta</button>
+        <div class="crawl-count">Pagine indicizzate: <b id="crawlCount">7</b> / 7</div>
+      </div>
+    </div>
+    <div class="crawl-db">
+      <div class="crawl-db-head">
+        <svg viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="10" rx="16" ry="6" stroke="currentColor" stroke-width="2.4"></ellipse><path d="M8 10v28c0 3.3 7.2 6 16 6s16-2.7 16-6V10" stroke="currentColor" stroke-width="2.4"></path><path d="M8 24c0 3.3 7.2 6 16 6s16-2.7 16-6" stroke="currentColor" stroke-width="2.4"></path></svg>
+        Database del motore di ricerca
+      </div>
+      <div class="crawl-db-list" id="crawlDbList"><div class="db-entry"><span class="dot"></span>www.esempio.ithome</div><div class="db-entry"><span class="dot"></span>www.esempio.it/chi-siamo</div><div class="db-entry"><span class="dot"></span>www.esempio.it/blog</div><div class="db-entry"><span class="dot"></span>www.esempio.it/prodotti</div><div class="db-entry"><span class="dot"></span>www.esempio.it/blog/1</div><div class="db-entry"><span class="dot"></span>www.esempio.it/blog/2</div><div class="db-entry"><span class="dot"></span>www.esempio.it/contatti</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HTTPS -->
+<section id="https">
+  <h2>La sicurezza dei siti web</h2>
+  <p class="subtitle">Da HTTP a HTTPS</p>
+  <p class="page-ref">p. 164</p>
+  <p class="lede">HTTP invia i dati in chiaro. HTTPS li cifra, proteggendo password e numeri di carta da occhi indiscreti sulla rete.</p>
+
+  <div class="https-wrap">
+    <div class="lock-scene">
+      <div class="toggle" id="httpsToggle">
+        <button class="on" data-mode="http">HTTP</button>
+        <button data-mode="https">HTTPS</button>
+      </div>
+      <svg id="lockIcon" viewBox="0 0 64 64" fill="none">
+        <rect x="14" y="28" width="36" height="28" rx="4" fill="#EFEBE0" stroke="#B7402F" stroke-width="2"></rect>
+        <path id="shackle" d="M20 28 V20 a12 12 0 0 1 24 0 v8" stroke="#B7402F" stroke-width="3.4" fill="none" stroke-linecap="round"></path>
+        <circle cx="32" cy="42" r="4" fill="#B7402F"></circle>
+      </svg>
+      <div class="lock-status insecure" id="lockStatus">connessione non cifrata</div>
+    </div>
+
+    <div>
+      <div class="mono" style="font-size:13px; color:var(--text-dim); margin-bottom:6px;" id="httpsAddr">http://tuabanca.esempio.it/login</div>
+      <div class="packet-line">
+        <div class="packet mono" id="httpsPacket">utente=mario&amp;pass=12345</div>
+      </div>
+      <p class="caption-note" id="httpsCaption">Con HTTP, chiunque intercetti la connessione legge i dati così come sono: in chiaro.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LINGUAGGI -->
+<section id="linguaggi">
+  <h2>I linguaggi del Web</h2>
+  <p class="subtitle">HTML, CSS e JavaScript a confronto</p>
+  <p class="page-ref">p. 165</p>
+  <p class="lede">HTML dà il contenuto, CSS lo stile, JavaScript il comportamento. Prova a spegnerli uno alla volta e osserva cosa cambia qui sotto.</p>
+
+  <div class="lang-wrap">
+    <div class="lang-toggles">
+      <div class="lang-toggle">
+        <div><div class="name">HTML</div><div class="job">contenuto e struttura</div></div>
+        <button class="switch on" disabled="" aria-label="HTML sempre attivo"><span class="knob"></span></button>
+      </div>
+      <div class="lang-toggle">
+        <div><div class="name">CSS</div><div class="job">stile e presentazione</div></div>
+        <button class="switch on" id="toggleCss" aria-pressed="true"><span class="knob"></span></button>
+      </div>
+      <div class="lang-toggle">
+        <div><div class="name">JavaScript</div><div class="job">logica e interazione</div></div>
+        <button class="switch on" id="toggleJs" aria-pressed="true"><span class="knob"></span></button>
+      </div>
+    </div>
+
+    <div class="browser">
+      <div class="bar"><span class="dotb"></span><span class="dotb"></span><span class="dotb"></span><span class="addr">pagina.html</span></div>
+      <div class="stage css-on js-on" id="stage">
+        <h4>Benvenuti nel corso di Web</h4>
+        <p>Questo testo è lo stesso HTML in ogni caso. Cambia solo il modo in cui appare — e come reagisce ai tuoi clic.</p>
+        <button class="demo-btn" id="demoBtn">Clicca qui</button><span class="demo-count" id="demoCount"></span>
+        <p class="js-hint" id="jsHint" style="display:none;">Senza JavaScript, i pulsanti restano muti: il browser mostra l'HTML ma nessuno risponde ai clic.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINALE -->
+<div class="finale" id="finale">
+  <h2>Internet non è il Web</h2>
+  <p class="lede">Internet è l'infrastruttura globale di rete. Il Web — insieme a posta elettronica, chat, home banking — è solo uno dei servizi che vi girano sopra.</p>
+
+  <div class="glossary" id="glossary">
+    <button class="chip" data-def="La rete pubblica di telecomunicazioni che collega reti locali di computer in tutto il mondo.">Internet</button>
+    <button class="chip" data-def="Un insieme di regole condivise che definiscono come due sistemi si scambiano messaggi.">Protocollo</button>
+    <button class="chip open" data-def="Il modello in cui un client richiede risorse e un server, sempre in ascolto, le fornisce.">Client-server</button>
+    <button class="chip" data-def="L'indirizzo univoco che identifica e localizza una risorsa sul Web.">URL</button>
+    <button class="chip" data-def="Il sistema di documenti ipertestuali e multimediali basato su HTML, HTTP e URL.">WWW</button>
+    <button class="chip" data-def="I protocolli per trasferire pagine web; HTTPS ne aggiunge la cifratura dei dati.">HTTP / HTTPS</button>
+    <button class="chip" data-def="Il linguaggio di markup che struttura il contenuto di una pagina.">HTML</button>
+    <button class="chip" data-def="Il linguaggio che definisce l'aspetto e lo stile delle pagine.">CSS</button>
+    <button class="chip" data-def="Il linguaggio di programmazione che rende le pagine interattive.">JavaScript</button>
+  </div>
+  <div class="glossary-def show" id="glossaryDef"><b>Client-server.</b> Il modello in cui un client richiede risorse e un server, sempre in ascolto, le fornisce.</div>
+
+</div>
+
+<footer>Materiale didattico basato su "Hashtag 2", Modulo B, Linguaggi per il web · Realizzato con l'assistenza di Claude (Anthropic)</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Nav: active dot on scroll + smooth click ---------- */
+  var navButtons = Array.prototype.slice.call(document.querySelectorAll('#wireNav button'));
+  var sections = navButtons.map(function(b){ return document.getElementById(b.getAttribute('data-target')); });
+
+  navButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var el = document.getElementById(btn.getAttribute('data-target'));
+      if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+
+  function setActive(id){
+    navButtons.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-target') === id); });
+  }
+
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      var best = null, bestRatio = 0;
+      entries.forEach(function(e){
+        if(e.isIntersecting && e.intersectionRatio > bestRatio){ bestRatio = e.intersectionRatio; best = e.target; }
+      });
+      if(best) setActive(best.id);
+    }, { threshold:[0.2,0.4,0.6,0.8], rootMargin:'-10% 0px -10% 0px' });
+    sections.forEach(function(s){ if(s) obs.observe(s); });
+  }
+  setActive('hero');
+
+  /* ---------- Client / Server demo ---------- */
+  var clientStatus = document.getElementById('clientStatus');
+  var serverStatus = document.getElementById('serverStatus');
+  var pulseReq = document.getElementById('pulseReq');
+  var pulseRes = document.getElementById('pulseRes');
+  var csLog = document.getElementById('csLog');
+  var csStage = document.getElementById('csStage');
+  var csBrowserAddr = document.getElementById('csBrowserAddr');
+  var btnGood = document.getElementById('btnGood');
+  var btnBad = document.getElementById('btnBad');
+  var csBusy = false;
+
+  function runRequest(path, exists){
+    if(csBusy) return;
+    csBusy = true;
+    btnGood.disabled = true; btnBad.disabled = true;
+    clientStatus.textContent = 'invio GET ' + path + ' …';
+    clientStatus.className = 'cs-status';
+    serverStatus.textContent = 'in attesa di richieste';
+    csLog.innerHTML = '';
+    csBrowserAddr.textContent = 'www.esempio.it' + path;
+    csStage.innerHTML = '<p style="color:var(--text-dim); font-size:14px; text-align:center; margin:0">caricamento…</p>';
+
+    pulseReq.classList.remove('moveright');
+    void pulseReq.offsetWidth;
+    pulseReq.classList.add('moveright');
+
+    setTimeout(function(){
+      serverStatus.textContent = exists ? 'elaborazione…' : 'risorsa non trovata…';
+      setTimeout(function(){
+        pulseRes.classList.remove('moveleft');
+        void pulseRes.offsetWidth;
+        pulseRes.classList.add('moveleft');
+
+        setTimeout(function(){
+          if(exists){
+            clientStatus.textContent = 'risposta ricevuta';
+            clientStatus.className = 'cs-status ok';
+            serverStatus.textContent = 'risposta inviata';
+            csLog.innerHTML = 'GET ' + path + ' &rarr; <span class="ok">200 OK</span>';
+            csStage.innerHTML =
+              '<div style="text-align:center">' +
+                '<p style="margin:0; font-size:13px; color:#555">Benvenuti nel corso di Web! Il server ha trovato la risorsa e l\'ha restituita al client.</p>' +
+              '</div>';
+          } else {
+            clientStatus.textContent = 'risposta ricevuta';
+            clientStatus.className = 'cs-status err';
+            serverStatus.textContent = 'risorsa non trovata';
+            csLog.innerHTML = 'GET ' + path + ' &rarr; <span class="err">404 Not Found</span>';
+            csStage.innerHTML =
+              '<div style="text-align:center">' +
+                '<svg viewBox="0 0 48 48" style="width:34px;height:34px;color:var(--alert)" fill="none"><circle cx="14" cy="24" r="8" stroke="currentColor" stroke-width="2"/><circle cx="34" cy="24" r="8" stroke="currentColor" stroke-width="2"/><line x1="20" y1="18" x2="28" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="28" y1="18" x2="20" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
+                '<h4 style="margin:6px 0 2px; font-family:\'JetBrains Mono\',monospace; font-size:26px; font-weight:700; color:var(--alert)">404</h4>' +
+                '<p style="margin:0; font-size:14px; font-weight:600; color:#333">Pagina non trovata</p>' +
+                '<p style="margin:6px 0 0; font-size:12px; color:#777">La risorsa ' + path + ' non è disponibile su questo server.</p>' +
+              '</div>';
+          }
+          csBusy = false;
+          btnGood.disabled = false; btnBad.disabled = false;
+        }, 750);
+      }, 550);
+    }, 750);
+  }
+
+  btnGood.addEventListener('click', function(){ runRequest('/pagina.html', true); });
+  btnBad.addEventListener('click', function(){ runRequest('/non-esiste.html', false); });
+
+  /* ---------- WWW cards ---------- */
+  var wwwCards = Array.prototype.slice.call(document.querySelectorAll('.www-card'));
+  var wwwResult = document.getElementById('wwwResult');
+  var seen = {};
+  wwwCards.forEach(function(card){
+    card.addEventListener('click', function(){
+      card.classList.toggle('flipped');
+      card.classList.add('seen');
+      seen[card.getAttribute('data-key')] = true;
+      if(seen.html && seen.http && seen.url){
+        wwwResult.classList.add('complete');
+      }
+    });
+  });
+
+  /* ---------- URL anatomy ---------- */
+  var segs = Array.prototype.slice.call(document.querySelectorAll('.url-bar .seg'));
+  var urlName = document.querySelector('#urlCaption .name');
+  var urlExpl = document.querySelector('#urlCaption .expl');
+  segs.forEach(function(seg){
+    function activate(){
+      segs.forEach(function(s){ s.classList.remove('active'); });
+      seg.classList.add('active');
+      urlName.textContent = seg.getAttribute('data-name');
+      urlExpl.textContent = seg.getAttribute('data-expl');
+    }
+    seg.addEventListener('mouseenter', activate);
+    seg.addEventListener('focus', activate);
+    seg.addEventListener('click', activate);
+    seg.setAttribute('tabindex', '0');
+  });
+
+  /* ---------- Crawler ---------- */
+  var nodesXY = [
+    {x:120,y:150},{x:320,y:80},{x:520,y:150},{x:720,y:90},{x:340,y:230},{x:560,y:240},{x:780,y:220}
+  ];
+  var nodeLabels = ['home','/chi-siamo','/blog','/prodotti','/blog/1','/blog/2','/contatti'];
+  var order = [0,1,2,3,4,5,6];
+  var spider = document.getElementById('spider');
+  var cnodes = Array.prototype.slice.call(document.querySelectorAll('.cnode'));
+  var crawlCount = document.getElementById('crawlCount');
+  var btnCrawl = document.getElementById('btnCrawl');
+  var btnCrawlReset = document.getElementById('btnCrawlReset');
+  var crawlDbList = document.getElementById('crawlDbList');
+  var crawling = false;
+
+  function placeSpider(i){
+    var p = nodesXY[i];
+    spider.style.left = (p.x/900*100) + '%';
+    spider.style.top = (p.y/300*100) + '%';
+  }
+  function addDbEntry(idx){
+    var empty = document.getElementById('crawlDbEmpty');
+    if(empty) empty.remove();
+    var row = document.createElement('div');
+    row.className = 'db-entry';
+    row.innerHTML = '<span class="dot"></span>www.esempio.it' + nodeLabels[idx];
+    crawlDbList.appendChild(row);
+  }
+  function resetCrawl(){
+    crawling = false;
+    cnodes.forEach(function(n){ n.classList.remove('visited'); });
+    crawlCount.textContent = '0';
+    crawlDbList.innerHTML = '<div class="db-empty" id="crawlDbEmpty">Ancora nessun indirizzo registrato…</div>';
+    placeSpider(0);
+  }
+  function runCrawl(){
+    if(crawling) return;
+    crawling = true;
+    resetCrawl();
+    var step = 0;
+    function next(){
+      if(step >= order.length){ crawling = false; return; }
+      var idx = order[step];
+      placeSpider(idx);
+      setTimeout(function(){
+        cnodes[idx].classList.add('visited');
+        addDbEntry(idx);
+        crawlCount.textContent = String(step + 1);
+        step++;
+        setTimeout(next, 500);
+      }, 550);
+    }
+    next();
+  }
+  btnCrawl.addEventListener('click', runCrawl);
+  btnCrawlReset.addEventListener('click', resetCrawl);
+  placeSpider(0);
+
+  /* ---------- HTTPS toggle ---------- */
+  var httpsToggle = document.getElementById('httpsToggle');
+  var shackle = document.getElementById('shackle');
+  var lockStatus = document.getElementById('lockStatus');
+  var httpsAddr = document.getElementById('httpsAddr');
+  var httpsPacket = document.getElementById('httpsPacket');
+  var httpsCaption = document.getElementById('httpsCaption');
+  var lockBox = document.querySelector('#lockIcon rect');
+  var lockDot = document.querySelector('#lockIcon circle');
+
+  httpsToggle.addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-mode]');
+    if(!btn) return;
+    var mode = btn.getAttribute('data-mode');
+    Array.prototype.slice.call(httpsToggle.querySelectorAll('button')).forEach(function(b){ b.classList.toggle('on', b === btn); });
+
+    if(mode === 'https'){
+      shackle.setAttribute('d', 'M20 24 V20 a12 12 0 0 1 24 0 v4');
+      shackle.setAttribute('stroke', '#2451A3');
+      lockBox.setAttribute('stroke', '#2451A3');
+      lockDot.setAttribute('fill', '#2451A3');
+      lockStatus.textContent = 'connessione cifrata';
+      lockStatus.className = 'lock-status secure';
+      httpsAddr.textContent = 'https://tuabanca.esempio.it/login';
+      httpsPacket.textContent = 'x9$kLp#2mQ&7fZ@';
+      httpsCaption.textContent = 'Con HTTPS, i dati vengono cifrati prima di partire: chi li intercetta vede solo caratteri senza senso.';
+    } else {
+      shackle.setAttribute('d', 'M20 28 V20 a12 12 0 0 1 24 0 v8');
+      shackle.setAttribute('stroke', '#B7402F');
+      lockBox.setAttribute('stroke', '#B7402F');
+      lockDot.setAttribute('fill', '#B7402F');
+      lockStatus.textContent = 'connessione non cifrata';
+      lockStatus.className = 'lock-status insecure';
+      httpsAddr.textContent = 'http://tuabanca.esempio.it/login';
+      httpsPacket.textContent = 'utente=mario&pass=12345';
+      httpsCaption.textContent = 'Con HTTP, chiunque intercetti la connessione legge i dati così come sono: in chiaro.';
+    }
+  });
+
+  /* ---------- Languages demo ---------- */
+  var stage = document.getElementById('stage');
+  var toggleCss = document.getElementById('toggleCss');
+  var toggleJs = document.getElementById('toggleJs');
+  var demoBtn = document.getElementById('demoBtn');
+  var demoCount = document.getElementById('demoCount');
+  var jsHint = document.getElementById('jsHint');
+  var count = 0;
+  var jsOn = true;
+
+  toggleCss.addEventListener('click', function(){
+    var on = !toggleCss.classList.contains('on');
+    toggleCss.classList.toggle('on', on);
+    toggleCss.setAttribute('aria-pressed', String(on));
+    stage.classList.toggle('css-on', on);
+  });
+
+  toggleJs.addEventListener('click', function(){
+    jsOn = !toggleJs.classList.contains('on');
+    toggleJs.classList.toggle('on', jsOn);
+    toggleJs.setAttribute('aria-pressed', String(jsOn));
+    stage.classList.toggle('js-on', jsOn);
+    jsHint.style.display = jsOn ? 'none' : 'block';
+    if(!jsOn){ demoCount.textContent = ''; count = 0; }
+  });
+
+  demoBtn.addEventListener('click', function(){
+    if(!jsOn) return;
+    count++;
+    demoCount.textContent = 'cliccato ' + count + ' volt' + (count === 1 ? 'a' : 'e');
+  });
+
+  /* ---------- Glossary ---------- */
+  var chips = Array.prototype.slice.call(document.querySelectorAll('#glossary .chip'));
+  var glossaryDef = document.getElementById('glossaryDef');
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var already = chip.classList.contains('open');
+      chips.forEach(function(c){ c.classList.remove('open'); });
+      if(already){
+        glossaryDef.classList.remove('show');
+      } else {
+        chip.classList.add('open');
+        glossaryDef.innerHTML = '<b>' + chip.textContent + '.</b> ' + chip.getAttribute('data-def');
+        glossaryDef.classList.add('show');
+      }
+    });
+  });
+
+})();
+</script>
+
+
+</body></html>

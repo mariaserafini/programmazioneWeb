@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linguaggi per il Web — Percorsi interattivi</title>
+  <meta name="description"
+    content="Indice dei percorsi interattivi del Modulo B: documenti e markup, Internet e il Web, HTML, CSS">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F6F3EC;
+      --paper-2: #EFEBE0;
+      --ink: #201E1B;
+      --ink-soft: #4B463F;
+      --line: #D8D1C2;
+      --tag: #0B6E4F;
+      --tag-soft: #E4F0EA;
+      --amber: #E2A400;
+      --amber-soft: #FBF0CE;
+      --brick: #B7402F;
+      --blue: #2451A3;
+      --blue-soft: #E4EAF6;
+      --serif: "Source Serif 4", Georgia, serif;
+      --sans: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+      --mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important
+      }
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    .sans {
+      font-family: var(--sans)
+    }
+
+    .mono {
+      font-family: var(--mono)
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--tag);
+      outline-offset: 2px
+    }
+
+    header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 70px 24px 20px
+    }
+
+    .kicker {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--tag);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .kicker::before {
+      content: "<";
+      color: var(--ink-soft)
+    }
+
+    .kicker::after {
+      content: ">";
+      color: var(--ink-soft)
+    }
+
+    h1 {
+      font-size: clamp(32px, 5.2vw, 50px);
+      line-height: 1.08;
+      margin: 0 0 14px;
+      font-weight: 600;
+      letter-spacing: -.01em
+    }
+
+    h1 .accent {
+      color: var(--tag)
+    }
+
+    header p {
+      font-size: 17px;
+      color: var(--ink-soft);
+      max-width: 56ch;
+      margin: 0
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 26px 24px 90px
+    }
+
+    .module-label {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin: 38px 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .module-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line)
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 20px 22px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .15s, transform .15s, box-shadow .15s;
+    }
+
+    a.card:hover {
+      border-color: var(--tag);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -20px rgba(20, 18, 15, .35)
+    }
+
+    a.card:focus-visible {
+      border-color: var(--tag)
+    }
+
+    .card .num {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--tag);
+      background: var(--tag-soft);
+      border-radius: 8px;
+      padding: 8px 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .card.disabled .num {
+      color: var(--ink-soft);
+      background: var(--paper-2)
+    }
+
+    .card .body {
+      flex: 1;
+      min-width: 0
+    }
+
+    .card .body h3 {
+      margin: 0 0 4px;
+      font-family: var(--sans);
+      font-size: 18px;
+      font-weight: 600
+    }
+
+    .card .body p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--ink-soft)
+    }
+
+    .card .status {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      border-radius: 999px;
+      padding: 6px 12px;
+      flex-shrink: 0;
+    }
+
+    .card.ready .status {
+      background: var(--tag-soft);
+      color: var(--tag)
+    }
+
+    .card.disabled .status {
+      background: var(--paper-2);
+      color: var(--ink-soft)
+    }
+
+    .card.disabled {
+      cursor: default
+    }
+
+    .card.disabled .body h3 {
+      color: var(--ink-soft)
+    }
+
+    .card .arrow {
+      font-family: var(--sans);
+      font-size: 20px;
+      color: var(--tag);
+      flex-shrink: 0
+    }
+
+    .card.disabled .arrow {
+      display: none
+    }
+
+    footer {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--ink-soft)
+    }
+
+    footer a {
+      color: var(--ink-soft)
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="kicker">Modulo B · Linguaggi per il Web</div>
+    <h1>Materiali interattivi per <span class="accent">Informatica</span></h1>
+
+  </header>
+
+  <main>
+    <div class="module-label">Unità B1</div>
+    <div class="list">
+      <a class="card ready" href="01-documentiMarkup.html">
+        <span class="num">B1</span>
+        <span class="body">
+          <h3>Documenti e Linguaggi Markup</h3>
+          <p>Documento, supporto e formato · i quattro aspetti · tag e markup · dati e metadati · Markdown</p>
+        </span>
+        <span class="status">Disponibile</span>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <div class="module-label">Unità B2</div>
+    <div class="list">
+      <a class="card ready" href="02-Web.html">
+        <span class="num">B2.1</span>
+        <span class="body">
+          <h3>Internet e il Web</h3>
+          <p>La rete globale e il web</p>
+        </span>
+        <span class="status">Disponibile</span>
+        <span class="arrow">→</span>
+      </a>
+      <div class="card disabled" aria-disabled="true">
+        <span class="num">B2.2</span>
+        <span class="body">
+          <h3>Linguaggio HTML</h3>
+          <p>In costruzione</p>
+        </span>
+        <span class="status">Presto</span>
+      </div>
+      <div class="card disabled" aria-disabled="true">
+        <span class="num">B2.3</span>
+        <span class="body">
+          <h3>Linguaggio CSS</h3>
+          <p>In costruzione</p>
+        </span>
+        <span class="status">Presto</span>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    Materiale didattico basato su "Hashtag 2", Modulo B, Linguaggi per il web · Realizzato con l'assistenza di Claude
+    (Anthropic)
+  </footer>
+
+</body>
+
+</html>
