@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documenti e linguaggi di markup — Unità B1</title>
+  <meta name="description" content="Percorso interattivo su documento, formato, markup, metadati e Markdown">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F6F3EC;
+      --paper-2: #EFEBE0;
+      --ink: #201E1B;
+      --ink-soft: #4B463F;
+      --line: #D8D1C2;
+      --tag: #0B6E4F;
+      --tag-soft: #E4F0EA;
+      --amber: #E2A400;
+      --amber-soft: #FBF0CE;
+      --brick: #B7402F;
+      --brick-soft: #F7E4DF;
+      --blue: #2451A3;
+      --blue-soft: #E4EAF6;
+      --radius: 10px;
+      --serif: "Source Serif 4", Georgia, serif;
+      --sans: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+      --mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 76px
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto
+      }
+
+      * {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important
+      }
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--amber-soft);
+      color: var(--ink)
+    }
+
+    a {
+      color: var(--tag)
+    }
+
+    h1,
+    h2,
+    h3,
+    .sans {
+      font-family: var(--sans)
+    }
+
+    code,
+    .mono,
+    .tagchip {
+      font-family: var(--mono)
+    }
+
+    img {
+      max-width: 100%
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 0;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 10px 16px;
+      z-index: 200
+    }
+
+    .skip-link:focus {
+      left: 8px;
+      top: 8px
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--tag);
+      outline-offset: 2px
+    }
+
+    /* ---------- TOPBAR ---------- */
+    header.top {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(246, 243, 236, .92);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .top-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .brand .brk {
+      color: var(--tag);
+      font-family: var(--mono)
+    }
+
+    nav.pillnav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px
+    }
+
+    nav.pillnav::-webkit-scrollbar {
+      display: none
+    }
+
+    nav.pillnav a {
+      font-family: var(--sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--ink-soft);
+      padding: 7px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+      border: 1px solid transparent;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+
+    nav.pillnav a:hover {
+      background: var(--paper-2)
+    }
+
+    nav.pillnav a.active {
+      background: var(--ink);
+      color: var(--paper)
+    }
+
+    /* ---------- LAYOUT ---------- */
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px
+    }
+
+    section {
+      padding: 64px 0;
+      border-bottom: 1px solid var(--line)
+    }
+
+    section:last-of-type {
+      border-bottom: none
+    }
+
+    .section-head {
+      max-width: 680px;
+      margin-bottom: 34px
+    }
+
+    .kicker {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--tag);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .kicker::before {
+      content: "<";
+      color: var(--ink-soft)
+    }
+
+    .kicker::after {
+      content: ">";
+      color: var(--ink-soft)
+    }
+
+    h2 {
+      font-size: clamp(28px, 4vw, 38px);
+      margin: 0 0 12px;
+      line-height: 1.15;
+      font-weight: 600
+    }
+
+    .lead {
+      font-size: 17px;
+      color: var(--ink-soft);
+      margin: 0
+    }
+
+    .lead strong {
+      color: var(--ink)
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      padding: 74px 0 60px;
+      position: relative
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 3.15fr .85fr;
+      gap: 44px;
+      align-items: center
+    }
+
+    @media (max-width:860px) {
+      .hero-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .hero h1 {
+      font-size: clamp(34px, 5.4vw, 54px);
+      line-height: 1.06;
+      margin: 0 0 18px;
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
+
+    .hero h1 .accent {
+      color: var(--tag)
+    }
+
+    .hero p.sub {
+      font-size: 18px;
+      color: var(--ink-soft);
+      max-width: 46ch;
+      margin: 0 0 26px
+    }
+
+    .hero .meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--ink-soft)
+    }
+
+    .hero .meta span {
+      border: 1px solid var(--line);
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #fff
+    }
+
+    .tagviz {
+      background: var(--ink);
+      border-radius: 16px;
+      padding: 26px 24px;
+      color: #F4F1EA;
+      font-family: var(--mono);
+      font-size: 14.5px;
+      box-shadow: 0 18px 40px -22px rgba(20, 18, 15, .55);
+    }
+
+    .tagviz .win {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px
+    }
+
+    .tagviz .win i {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: block;
+      background: #5b564c
+    }
+
+    .tagviz pre {
+      margin: 0;
+      white-space: pre-wrap;
+      line-height: 1.7
+    }
+
+    .tagviz .t {
+      color: #7FD4A8
+    }
+
+    .tagviz .a {
+      color: #E8C46A
+    }
+
+    .tagviz .s {
+      color: #F4F1EA
+    }
+
+    .tagviz .c {
+      color: #8FAEE0
+    }
+
+    /* ---------- CARD BASICS ---------- */
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .btn {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 9px 16px;
+      border-radius: 8px;
+      transition: transform .12s, background .15s;
+    }
+
+    .btn:hover {
+      background: #3a352d
+    }
+
+    .btn:active {
+      transform: translateY(1px)
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--line)
+    }
+
+    .btn.ghost:hover {
+      border-color: var(--ink)
+    }
+
+    .btn.small {
+      padding: 6px 11px;
+      font-size: 12.5px
+    }
+
+    .btn[disabled] {
+      opacity: .45;
+      cursor: default
+    }
+
+    .pill-toggle {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px;
+      background: #fff
+    }
+
+    .pill-toggle button {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      background: transparent;
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--ink-soft);
+    }
+
+    .pill-toggle button.active {
+      background: var(--ink);
+      color: var(--paper)
+    }
+
+    .tagchip {
+      display: inline-block;
+      font-size: 12.5px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: var(--tag-soft);
+      color: var(--tag);
+      font-weight: 600;
+      border: 1px solid #cdeada;
+    }
+
+    .note-callout {
+      border-left: 4px solid var(--brick);
+      background: var(--brick-soft);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      font-size: 15px;
+    }
+
+    .note-callout strong {
+      color: var(--brick)
+    }
+
+    /* ===================== SEZIONE 1: documento ===================== */
+    .doc-diagram {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start
+    }
+
+    @media (max-width:800px) {
+      .doc-diagram {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .doc-nodes {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .doc-node {
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 15.5px;
+      border: 1.5px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color .15s, background .15s;
+    }
+
+    .doc-node:hover {
+      border-color: var(--ink)
+    }
+
+    .doc-node.active {
+      border-color: var(--tag);
+      background: var(--tag-soft);
+      color: var(--tag)
+    }
+
+    .doc-node small {
+      display: block;
+      font-family: var(--serif);
+      font-weight: 400;
+      color: var(--ink-soft);
+      font-size: 13px;
+      margin-top: 3px
+    }
+
+    .doc-node.active small {
+      color: var(--tag)
+    }
+
+    .doc-detail {
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 22px;
+      min-height: 230px;
+      background: #fff;
+    }
+
+    .doc-detail h4 {
+      margin: 0 0 8px;
+      font-size: 19px
+    }
+
+    .doc-detail p {
+      margin: 0 0 10px;
+      color: var(--ink-soft);
+      font-size: 15px
+    }
+
+    .doc-detail .example {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--paper);
+      border-radius: 8px;
+      font-size: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .timeline {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 2px 14px;
+      margin-top: 38px
+    }
+
+    .timeline::-webkit-scrollbar {
+      height: 6px
+    }
+
+    .timeline::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 6px
+    }
+
+    .tl-card {
+      min-width: 150px;
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      background: #fff;
+      cursor: pointer;
+      transition: transform .15s, border-color .15s;
+    }
+
+    .tl-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--tag)
+    }
+
+    .tl-card .yr {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--tag);
+      font-weight: 700
+    }
+
+    .tl-card .nm {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 14.5px;
+      margin: 4px 0
+    }
+
+    .tl-fact {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      background: var(--amber-soft);
+      font-size: 14.5px;
+      display: none;
+    }
+
+    .tl-fact.show {
+      display: block
+    }
+
+    /* ===================== SEZIONE 2: aspetti (cylinder) ===================== */
+    .aspects-wrap {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 40px;
+      align-items: center
+    }
+
+    @media (max-width:800px) {
+      .aspects-wrap {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 4px
+    }
+
+    .layer {
+      border: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 15px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: filter .15s, transform .15s;
+      opacity: .55;
+    }
+
+    .layer:hover {
+      filter: brightness(1.08)
+    }
+
+    .layer.active {
+      opacity: 1;
+      transform: scale(1.015)
+    }
+
+    .layer span.q {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 13px;
+      opacity: .85
+    }
+
+    .layer[data-l="contenuto"] {
+      background: var(--amber);
+      color: #3a2c00
+    }
+
+    .layer[data-l="struttura"] {
+      background: var(--brick)
+    }
+
+    .layer[data-l="presentazione"] {
+      background: var(--blue)
+    }
+
+    .layer[data-l="comportamento"] {
+      background: var(--tag)
+    }
+
+    .aspect-detail {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px;
+      background: #fff;
+      min-height: 210px
+    }
+
+    .aspect-detail h4 {
+      margin: 0 0 6px;
+      font-size: 20px
+    }
+
+    .aspect-detail .q-big {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink-soft);
+      margin-bottom: 10px
+    }
+
+    .aspect-detail p {
+      color: var(--ink-soft);
+      font-size: 15px;
+      margin: 0
+    }
+
+    /* ===================== SEZIONE 3: una forma, mille presentazioni ===================== */
+    .stage {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 40px
+    }
+
+    @media (max-width:800px) {
+      .stage {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .stage-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .style-btn {
+      text-align: left;
+      border: 1.5px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 14.5px;
+    }
+
+    .style-btn small {
+      display: block;
+      font-family: var(--serif);
+      font-weight: 400;
+      color: var(--ink-soft);
+      margin-top: 3px;
+      font-size: 13px
+    }
+
+    .style-btn.active {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+      color: var(--blue)
+    }
+
+    .style-btn.active small {
+      color: var(--blue)
+    }
+
+    .poem-frame {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 30px 28px;
+      background: #fff;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: background .25s, color .25s;
+    }
+
+    .poem-frame .ttl {
+      font-weight: 700;
+      margin-bottom: 14px
+    }
+
+    .poem-frame .vs {
+      margin: 0
+    }
+
+    .poem-frame .aut {
+      margin-top: 16px;
+      font-style: italic
+    }
+
+    /* stile classico */
+    .pf-classico {
+      font-family: var(--serif)
+    }
+
+    .pf-classico .ttl {
+      font-size: 26px
+    }
+
+    .pf-classico .vs {
+      font-size: 17px
+    }
+
+    /* stile moderno */
+    .pf-moderno {
+      font-family: var(--sans);
+      background: var(--ink) !important;
+      color: #F4F1EA
+    }
+
+    .pf-moderno .ttl {
+      font-size: 15px;
+      letter-spacing: .14em;
+      color: var(--amber)
+    }
+
+    .pf-moderno .vs {
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.5
+    }
+
+    .pf-moderno .aut {
+      color: #b9b3a4;
+      font-style: normal;
+      font-size: 13px
+    }
+
+    /* stile marcato (codice) */
+    .pf-codice {
+      font-family: var(--mono);
+      font-size: 14px;
+      background: var(--tag-soft) !important;
+      color: var(--ink)
+    }
+
+    .pf-codice .tagname {
+      color: var(--tag);
+      font-weight: 700
+    }
+
+    /* ===================== SEZIONE 4: markup ===================== */
+    .markup-lab {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px
+    }
+
+    .markup-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap
+    }
+
+    .poemtext {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px 30px;
+      background: #fff;
+      font-size: 17px
+    }
+
+    .poemtext .line {
+      padding: 3px 0;
+      position: relative
+    }
+
+    .poemtext .tagpair {
+      color: var(--tag);
+      font-family: var(--mono);
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity .2s
+    }
+
+    .markup-lab.tagged .poemtext .tagpair {
+      opacity: 1
+    }
+
+    .poemtext .line-content {
+      display: inline
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--ink-soft);
+      font-family: var(--sans)
+    }
+
+    /* ===================== SEZIONE 5: dati/metadati sort ===================== */
+    .sort-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px
+    }
+
+    .sort-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 20px;
+      background: #fff;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    @media (max-width:680px) {
+      .sort-card {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .sort-card .txt {
+      font-size: 15.5px
+    }
+
+    .sort-card .opts {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .opt-btn {
+      font-family: var(--sans);
+      font-size: 12.5px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      padding: 7px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--ink-soft);
+    }
+
+    .opt-btn:hover {
+      border-color: var(--ink);
+      color: var(--ink)
+    }
+
+    .sort-card .fb {
+      grid-column: 1/-1;
+      font-size: 13.5px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: none;
+      font-family: var(--sans)
+    }
+
+    .sort-card .fb.show {
+      display: block
+    }
+
+    .fb.correct {
+      background: var(--tag-soft);
+      color: var(--tag)
+    }
+
+    .fb.wrong {
+      background: var(--brick-soft);
+      color: var(--brick)
+    }
+
+    .score-line {
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin-top: 6px
+    }
+
+    /* ===================== SEZIONE 6: wysiwyg/wysiwym ===================== */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden
+    }
+
+    @media (max-width:760px) {
+      .compare {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .cmp-col {
+      padding: 24px
+    }
+
+    .cmp-col.a {
+      background: #fff
+    }
+
+    .cmp-col.b {
+      background: var(--ink);
+      color: #F4F1EA
+    }
+
+    .cmp-col h4 {
+      font-family: var(--sans);
+      margin: 0 0 4px;
+      font-size: 16px
+    }
+
+    .cmp-col .tagline {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--tag);
+      margin-bottom: 14px
+    }
+
+    .cmp-col.b .tagline {
+      color: var(--amber)
+    }
+
+    .wysiwyg-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 110px;
+      background: var(--paper)
+    }
+
+    .wysiwyg-toolbar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px
+    }
+
+    .wysiwyg-toolbar button {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-weight: 700
+    }
+
+    .latex-src {
+      font-family: var(--mono);
+      font-size: 14px;
+      background: #141311;
+      border-radius: 8px;
+      padding: 14px;
+      color: #F4F1EA;
+      min-height: 60px;
+    }
+
+    .latex-out {
+      margin-top: 14px;
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 22px;
+      text-align: center;
+      font-size: 22px;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .latex-out.show {
+      opacity: 1
+    }
+
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      margin: 0 4px
+    }
+
+    .frac .num {
+      border-bottom: 1.5px solid var(--ink);
+      padding: 0 6px 2px
+    }
+
+    .frac .den {
+      padding: 2px 6px 0
+    }
+
+    /* ===================== SEZIONE 7: markdown playground ===================== */
+    .md-lab {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden
+    }
+
+    @media (max-width:800px) {
+      .md-lab {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .md-pane {
+      display: flex;
+      flex-direction: column
+    }
+
+    .md-pane-head {
+      font-family: var(--sans);
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--paper-2);
+      color: var(--ink-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #mdInput {
+      border: none;
+      resize: vertical;
+      padding: 18px;
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 320px;
+      flex: 1;
+      background: #141311;
+      color: #EDEAE1;
+      outline: none;
+    }
+
+    #mdOutput {
+      padding: 20px 22px;
+      overflow: auto;
+      min-height: 320px;
+      background: #fff
+    }
+
+    #mdOutput h1,
+    #mdOutput h2,
+    #mdOutput h3 {
+      font-family: var(--sans);
+      margin: .5em 0 .3em
+    }
+
+    #mdOutput p {
+      margin: .5em 0
+    }
+
+    #mdOutput code {
+      background: var(--tag-soft);
+      color: var(--tag);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: .9em
+    }
+
+    #mdOutput blockquote {
+      border-left: 3px solid var(--amber);
+      margin: .6em 0;
+      padding: 2px 14px;
+      color: var(--ink-soft);
+      background: var(--amber-soft)
+    }
+
+    #mdOutput ul {
+      padding-left: 22px
+    }
+
+    #mdOutput hr {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 1em 0
+    }
+
+    .md-presets {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px
+    }
+
+    /* ===================== SEZIONE 8: sensi ===================== */
+    .senses {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px
+    }
+
+    @media (max-width:800px) {
+      .senses {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .sense-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .sense-card .icon {
+      font-size: 30px
+    }
+
+    .sense-card h4 {
+      margin: 0;
+      font-family: var(--sans);
+      font-size: 17px
+    }
+
+    .sense-card p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+      flex: 1
+    }
+
+    #brailleInput {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 15px
+    }
+
+    .braille-out {
+      font-size: 26px;
+      letter-spacing: 3px;
+      padding: 10px 0;
+      min-height: 40px;
+      word-break: break-all
+    }
+
+    .dotgrid {
+      display: inline-grid;
+      grid-template-columns: repeat(2, 16px);
+      grid-template-rows: repeat(3, 16px);
+      gap: 5px;
+      vertical-align: middle
+    }
+
+    .dotgrid i {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid var(--ink-soft);
+      display: block
+    }
+
+    .dotgrid i.on {
+      background: var(--tag);
+      border-color: var(--tag)
+    }
+
+    .braille-letterbox {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 10px;
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--ink-soft)
+    }
+
+    /* ===================== QUIZ ===================== */
+    .quiz-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px 22px;
+      background: #fff;
+      margin-bottom: 14px
+    }
+
+    .quiz-q {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 15.5px;
+      margin-bottom: 12px
+    }
+
+    .quiz-opts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .quiz-opt {
+      text-align: left;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-family: var(--serif);
+      font-size: 15px;
+    }
+
+    .quiz-opt.correct {
+      border-color: var(--tag);
+      background: var(--tag-soft);
+      color: var(--tag)
+    }
+
+    .quiz-opt.wrong {
+      border-color: var(--brick);
+      background: var(--brick-soft);
+      color: var(--brick)
+    }
+
+    .quiz-opt[disabled] {
+      cursor: default
+    }
+
+    .quiz-result {
+      font-family: var(--sans);
+      font-weight: 600;
+      text-align: center;
+      padding: 20px;
+      font-size: 17px
+    }
+
+    footer {
+      padding: 40px 20px 60px;
+      text-align: center;
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--ink-soft)
+    }
+
+    footer a {
+      color: var(--ink-soft)
+    }
+
+    .two-col-note {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px
+    }
+
+    @media (max-width:700px) {
+      .two-col-note {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main" class="skip-link">Vai al contenuto</a>
+
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="#top"> B1 · Markup</a>
+      <nav class="pillnav" id="pillnav" aria-label="Sezioni">
+        <a href="#documento">Documento</a>
+        <a href="#aspetti">Aspetti</a>
+        <a href="#forme">Mille forme</a>
+        <a href="#tag">Tag</a>
+        <a href="#metadati">Metadati</a>
+        <a href="#wysiwyg">WYSIWYG</a>
+        <a href="#markdown">Markdown</a>
+        <a href="#sensi">Sensi</a>
+        <a href="#verifica">Verifica</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-grid">
+        <div>
+          <h1>Ogni documento nasconde <span class="accent">un'etichetta</span>.</h1>
+          <div class="meta">
+            <span>Unità B1 · Linguaggi per il Web</span>
+            <span>pagg. 136 - 146</span>
+          </div>
+        </div>
+    </section>
+
+    <!-- 1. DOCUMENTO -->
+    <section id="documento">
+      <div class="section-head">
+        <div class="kicker">01 · definizioni</div>
+        <h2>Documento, supporto, formato</h2>
+        <p class="lead">Un <strong>documento</strong> attesta un fatto. Ma per esistere ha sempre bisogno di due cose:
+          un <strong>supporto</strong> fisico e un <strong>formato</strong>. </p>
+      </div>
+
+      <div class="doc-diagram">
+        <div class="doc-nodes" role="tablist" aria-label="Elementi del documento">
+          <button class="doc-node active" data-doc="documento" role="tab" aria-selected="true">Documento
+            <small>attesta un fatto o comprova un'affermazione</small></button>
+          <button class="doc-node" data-doc="contenuto" role="tab" aria-selected="false">Contenuto
+            <small>l'informazione che si vuole registrare</small></button>
+          <button class="doc-node" data-doc="supporto" role="tab" aria-selected="false">Supporto
+            <small>il materiale fisico su cui si registra</small></button>
+          <button class="doc-node" data-doc="formato" role="tab" aria-selected="false">Formato
+            <small>il tipo di rappresentazione (codice + forma)</small></button>
+        </div>
+        <div class="doc-detail" id="docDetail" aria-live="polite">
+          <!-- riempito via JS -->
+        </div>
+      </div>
+
+      <div class="timeline" id="timeline" aria-label="Storia dei supporti documentali"></div>
+      <div class="tl-fact" id="tlFact"></div>
+    </section>
+
+    <!-- 2. ASPETTI -->
+    <section id="aspetti">
+      <div class="section-head">
+        <div class="kicker">02 · quattro livelli</div>
+        <h2>I quattro aspetti di un documento</h2>
+        <p class="lead">Ogni documento si può leggere su quattro livelli indipendenti. Clicca uno strato della pila.</p>
+      </div>
+      <div class="aspects-wrap">
+        <div class="stack" role="tablist" aria-label="Aspetti del documento">
+          <button class="layer" data-l="comportamento" role="tab">Comportamento <span class="q">come
+              reagisce?</span></button>
+          <button class="layer" data-l="presentazione" role="tab">Presentazione <span class="q">come si
+              mostra?</span></button>
+          <button class="layer" data-l="struttura" role="tab">Struttura <span class="q">che senso hanno le
+              parti?</span></button>
+          <button class="layer active" data-l="contenuto" role="tab">Contenuto <span class="q">cosa
+              comunica?</span></button>
+        </div>
+        <div class="aspect-detail" id="aspectDetail" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- 3. UNA FORMA, MILLE PRESENTAZIONI -->
+    <section id="forme">
+      <div class="section-head">
+        <div class="kicker">03 · separation of concerns</div>
+        <h2>Un contenuto, mille presentazioni</h2>
+        <p class="lead">Contenuto e struttura restano gli stessi: cambiando solo il modulo di
+          <strong>presentazione</strong>, lo stesso testo etichettato può assumere forme completamente diverse.
+        </p>
+      </div>
+      <div class="stage">
+        <div class="stage-controls">
+          <button class="style-btn active" data-style="classico">Stile classico<small>serif, impaginazione da
+              libro</small></button>
+          <button class="style-btn" data-style="moderno">Stile moderno<small>sans-serif, sfondo scuro, evidenza sul
+              verso</small></button>
+          <button class="style-btn" data-style="codice">Solo il codice<small>il testo con i tag, prima di ogni
+              stile</small></button>
+        </div>
+        <div class="poem-frame pf-classico" id="poemFrame">
+          <div class="ttl">Soldati</div>
+          <p class="vs">Si sta come<br>d'autunno<br>sugli alberi<br>le foglie.</p>
+          <div class="aut">Giuseppe Ungaretti</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. TAG -->
+    <section id="tag">
+      <div class="section-head">
+        <div class="kicker">04 · linguaggi di markup</div>
+        <h2>Etichettare un testo</h2>
+        <p class="lead">Un linguaggio di markup aggiunge <strong>tag</strong> (etichette) al contenuto per dargli senso.
+          Attiva l'interruttore e guarda i tag comparire.</p>
+      </div>
+      <div class="markup-lab" id="markupLab">
+        <div class="markup-toolbar">
+          <div class="pill-toggle">
+            <button id="btnPlain" class="active">Testo semplice</button>
+            <button id="btnTagged">Testo marcato</button>
+          </div>
+          <span class="hint">i tag delimitano l'inizio e la fine di ogni parte del contenuto</span>
+        </div>
+        <div class="poemtext">
+          <div class="line"><span class="tagpair">&lt;titolo&gt;</span><span class="line-content">Soldati</span><span
+              class="tagpair">&lt;/titolo&gt;</span></div>
+          <div class="line"><span class="tagpair">&lt;testo&gt;</span></div>
+          <div class="line" style="padding-left:18px"><span class="tagpair">&lt;verso&gt;</span><span
+              class="line-content">Si sta come</span><span class="tagpair">&lt;/verso&gt;</span></div>
+          <div class="line" style="padding-left:18px"><span class="tagpair">&lt;verso&gt;</span><span
+              class="line-content">d'autunno</span><span class="tagpair">&lt;/verso&gt;</span></div>
+          <div class="line" style="padding-left:18px"><span class="tagpair">&lt;verso&gt;</span><span
+              class="line-content">sugli alberi</span><span class="tagpair">&lt;/verso&gt;</span></div>
+          <div class="line" style="padding-left:18px"><span class="tagpair">&lt;verso&gt;</span><span
+              class="line-content">le foglie.</span><span class="tagpair">&lt;/verso&gt;</span></div>
+          <div class="line"><span class="tagpair">&lt;/testo&gt;</span></div>
+          <div class="line"><span class="tagpair">&lt;autore&gt;</span><span class="line-content">Giuseppe
+              Ungaretti</span><span class="tagpair">&lt;/autore&gt;</span></div>
+        </div>
+      </div>
+      <div class="note-callout" style="margin-top:22px">
+        <strong>Regola pratica →</strong> si scrivono e leggono con un semplice editor di testo; i tag seguono
+        convenzioni prestabilite e sono distinguibili dal contenuto.
+      </div>
+    </section>
+
+    <!-- 5. DATI E METADATI -->
+    <section id="metadati">
+      <div class="section-head">
+        <div class="kicker">05 · classifica</div>
+        <h2>Dato o metadato?</h2>
+        <p class="lead">Il <strong>dato</strong> è il contenuto vero e proprio. Il <strong>metadato</strong> è
+          un'informazione aggiuntiva che lo descrive. Prova a classificare questi cinque elementi da un quaderno di
+          appunti.</p>
+      </div>
+      <div class="sort-grid" id="sortGrid"></div>
+      <div class="score-line" id="scoreLine">0 / 5 corrette</div>
+    </section>
+
+    <!-- 6. WYSIWYG vs WYSIWYM -->
+    <section id="wysiwyg">
+      <div class="section-head">
+        <div class="kicker">06 · due filosofie</div>
+        <h2>WYSIWYG contro WYSIWYM</h2>
+        <p class="lead">"Ciò che vedi è ciò che ottieni" contro "ciò che vedi è ciò che intendi". Prova entrambi gli
+          editor.</p>
+      </div>
+      <div class="compare">
+        <div class="cmp-col a">
+          <h4>WYSIWYG</h4>
+          <div class="tagline">What You See Is What You Get</div>
+          <div class="wysiwyg-toolbar">
+            <button id="wgBold"><b>B</b></button>
+            <button id="wgItalic"><i>I</i></button>
+          </div>
+          <div class="wysiwyg-box" id="wgBox" contenteditable="true">Scrivi qui e seleziona una parola, poi premi B o I.
+          </div>
+        </div>
+        <div class="cmp-col b">
+          <h4>WYSIWYM · esempio LaTeX</h4>
+          <div class="tagline">What You See Is What You Mean</div>
+          <div class="latex-src">{x=\frac&#123;-b \pm
+            \sqrt&#123;&#123;b&#125;^&#123;2&#125;-4ac&#125;&#125;&#123;2a&#125;}</div>
+          <div style="margin-top:12px"><button class="btn small" id="btnCompile">Compila →</button></div>
+          <div class="latex-out" id="latexOut">
+            x = −b ± <span class="frac"><span class="num">√(b²−4ac)</span></span> ⁄ 2a
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. MARKDOWN -->
+    <section id="markdown">
+      <div class="section-head">
+        <div class="kicker">07 · playground</div>
+        <h2>Il linguaggio Markdown</h2>
+        <p class="lead">Markdown non usa etichette come <code>&lt;tag&gt;</code>, ma simboli semplici: <code>#</code>,
+          <code>**</code>, <code>-</code>. Scrivi a sinistra, guarda il risultato a destra.
+        </p>
+      </div>
+      <div class="md-presets">
+        <button class="btn small ghost" data-preset="poesia">Esempio: poesia</button>
+        <button class="btn small ghost" data-preset="appunti">Esempio: appunti</button>
+        <button class="btn small ghost" data-preset="lista">Esempio: lista</button>
+      </div>
+      <div class="md-lab">
+        <div class="md-pane">
+          <div class="md-pane-head"><span>sorgente.md</span><span class="mono" style="opacity:.6">editing</span></div>
+          <textarea id="mdInput" spellcheck="false"></textarea>
+        </div>
+        <div class="md-pane">
+          <div class="md-pane-head"><span>anteprima</span><span class="mono" style="opacity:.6">presentazione</span>
+          </div>
+          <div id="mdOutput"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. SENSI -->
+    <section id="sensi">
+      <div class="section-head">
+        <div class="kicker">08 · accessibilità</div>
+        <h2>Tre modi di leggere un documento</h2>
+        <p class="lead">La presentazione visiva non è l'unica possibile: un documento può rivolgersi anche all'udito e
+          al tatto.</p>
+      </div>
+      <div class="senses">
+        <div class="sense-card">
+          <div class="icon">👁️</div>
+          <h4>Vista</h4>
+          <p>La modalità più comune: testo e immagini su schermo o su carta.</p>
+        </div>
+        <div class="sense-card">
+          <div class="icon">👂</div>
+          <h4>Udito — Text‑To‑Speech</h4>
+          <p>Un motore di sintesi vocale legge il documento ad alta voce.</p>
+          <button class="btn small" id="btnSpeak">🔊 Ascolta "Soldati"</button>
+        </div>
+        <div class="sense-card">
+          <div class="icon">🤚</div>
+          <h4>Tatto — Braille</h4>
+          <p>Ogni lettera diventa una matrice di 6 punti in rilievo. Scrivi una parola:</p>
+          <input id="brailleInput" type="text" maxlength="14" placeholder="es. ciao" value="ciao">
+          <div class="braille-out" id="brailleOut" aria-hidden="true"></div>
+          <div class="braille-letterbox">
+            <div class="dotgrid" id="dotgrid"></div>
+            <span id="dotLetterLabel">ultima lettera</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Materiale didattico basato su "Hashtag 2", Modulo B, Linguaggi per il web · Realizzato con l'assistenza di Claude
+    (Anthropic)
+  </footer>
+
+  <script>
+    /* ============ NAV ACTIVE STATE ============ */
+    (function () {
+      const links = document.querySelectorAll('#pillnav a');
+      const sections = [...links].map(l => document.querySelector(l.getAttribute('href')));
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            const id = '#' + e.target.id;
+            links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === id));
+          }
+        });
+      }, { rootMargin: '-40% 0px -55% 0px' });
+      sections.forEach(s => s && io.observe(s));
+    })();
+
+    /* ============ SEZIONE 1: DOCUMENTO ============ */
+    (function () {
+      const data = {
+        documento: {
+          title: 'Documento',
+          body: "Qualsiasi elemento che attesti un fatto o comprovi la verità di un'affermazione. Registra un'informazione in maniera indipendente dal supporto fisico e dal formato.",
+          example: 'Una pagella, una legge, una fotografia, una tavoletta d\'argilla: sono tutti documenti, in epoche e forme diversissime.'
+        },
+        contenuto: {
+          title: 'Contenuto',
+          body: "L'informazione che il documento porta con sé: testo, immagine, suono. È indipendente da come viene registrata.",
+          example: "Il voto \"7\" in una pagella è contenuto, qualunque sia il modo in cui viene scritto."
+        },
+        supporto: {
+          title: 'Supporto',
+          body: "Il materiale fisico, possibilmente durevole, sul quale si registra l'informazione: può essere estratta in un secondo momento.",
+          example: "Pietra, argilla, papiro, carta, un disco magnetico, una memoria SSD."
+        },
+        formato: {
+          title: 'Formato',
+          body: "L'insieme di meta‑informazioni utili a comprendere il significato del documento: riguarda sia il codice simbolico sia lo stile/forma.",
+          example: "Lo stesso anno può essere scritto \"1754\" (decimale) o \"MDCCLIV\" (romano): cambia il formato, non il contenuto."
+        }
+      };
+      const nodes = document.querySelectorAll('.doc-node');
+      const detail = document.getElementById('docDetail');
+      function render(key) {
+        const d = data[key];
+        detail.innerHTML = `<h4>${d.title}</h4><p>${d.body}</p><div class="example">${d.example}</div>`;
+      }
+      nodes.forEach(n => {
+        n.addEventListener('click', () => {
+          nodes.forEach(x => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false') });
+          n.classList.add('active'); n.setAttribute('aria-selected', 'true');
+          render(n.dataset.doc);
+        });
+      });
+      render('documento');
+
+      const timelineData = [
+        { yr: '~1750 a.C.', nm: 'Tavoletta d\'argilla', fact: 'Il Codice di Hammurabi è inciso su argilla: una delle più antiche raccolte di leggi mai trovate.' },
+        { yr: '~3000 a.C.', nm: 'Papiro', fact: 'Realizzato dal midollo della pianta omonima, ha permesso ai documenti egizi di arrivare fino a noi.' },
+        { yr: 'II sec. a.C.', nm: 'Pergamena', fact: 'Pelle animale trattata: più resistente del papiro, nata (secondo la leggenda) a Pergamo.' },
+        { yr: 'sec. II d.C.', nm: 'Carta', fact: 'Inventata in Cina, diventa il supporto documentale dominante per quasi due millenni.' },
+        { yr: 'XX secolo', nm: 'Supporto magnetico', fact: 'Nastri e dischi registrano informazioni tramite magnetizzazione: nasce l\'archiviazione elettronica.' },
+        { yr: 'Oggi', nm: 'Memoria SSD', fact: 'Stato solido, nessuna parte meccanica: il supporto documentale più veloce e diffuso oggi.' }
+      ];
+      const tl = document.getElementById('timeline');
+      const fact = document.getElementById('tlFact');
+      timelineData.forEach((t, i) => {
+        const el = document.createElement('button');
+        el.className = 'tl-card';
+        el.innerHTML = `<div class="yr">${t.yr}</div><div class="nm">${t.nm}</div>`;
+        el.addEventListener('click', () => {
+          fact.textContent = t.fact;
+          fact.classList.add('show');
+        });
+        tl.appendChild(el);
+      });
+    })();
+
+    /* ============ SEZIONE 2: ASPETTI ============ */
+    (function () {
+      const data = {
+        contenuto: { q: '"Che cosa comunica il documento?"', body: 'Ciò che l\'autore vuole registrare e comunicare: il testo, l\'immagine, il dato in sé.' },
+        struttura: { q: '"Qual è il significato delle parti che lo compongono?"', body: 'Il senso attribuito a ciascuna parte: un titolo, una didascalia, l\'autore. È l\'aspetto semantico.' },
+        presentazione: { q: '"Come si presenta e come viene fruito?"', body: 'Colore, dimensione, font per un testo; volume e timbro per un audio. È lo stile.' },
+        comportamento: { q: '"Come reagisce quando l\'utente interagisce con esso?"', body: 'Per esempio un menu che appare al passaggio del mouse, o un inchiostro che cambia colore in base all\'angolazione.' }
+      };
+      const layers = document.querySelectorAll('.layer');
+      const detail = document.getElementById('aspectDetail');
+      function render(key) {
+        const d = data[key];
+        const label = key.charAt(0).toUpperCase() + key.slice(1);
+        detail.innerHTML = `<h4>${label}</h4><div class="q-big">${d.q}</div><p>${d.body}</p>`;
+      }
+      layers.forEach(l => {
+        l.addEventListener('click', () => {
+          layers.forEach(x => x.classList.remove('active'));
+          l.classList.add('active');
+          render(l.dataset.l);
+        });
+      });
+      render('contenuto');
+    })();
+
+    /* ============ SEZIONE 3: UNA FORMA, MILLE PRESENTAZIONI ============ */
+    (function () {
+      const btns = document.querySelectorAll('.style-btn');
+      const frame = document.getElementById('poemFrame');
+      const templates = {
+        classico: `<div class="ttl">Soldati</div><p class="vs">Si sta come<br>d'autunno<br>sugli alberi<br>le foglie.</p><div class="aut">Giuseppe Ungaretti</div>`,
+        moderno: `<div class="ttl">SOLDATI</div><p class="vs">Si sta come<br>d'autunno<br>sugli alberi<br>le foglie.</p><div class="aut">— Giuseppe Ungaretti</div>`,
+        codice: `<div>&lt;titolo&gt;Soldati&lt;/titolo&gt;<br>&lt;testo&gt;<br>&nbsp;&nbsp;&lt;verso&gt;Si sta come&lt;/verso&gt;<br>&nbsp;&nbsp;&lt;verso&gt;d'autunno&lt;/verso&gt;<br>&nbsp;&nbsp;&lt;verso&gt;sugli alberi&lt;/verso&gt;<br>&nbsp;&nbsp;&lt;verso&gt;le foglie.&lt;/verso&gt;<br>&lt;/testo&gt;<br>&lt;autore&gt;Giuseppe Ungaretti&lt;/autore&gt;</div>`
+      };
+      const classMap = { classico: 'pf-classico', moderno: 'pf-moderno', codice: 'pf-codice' };
+      btns.forEach(b => {
+        b.addEventListener('click', () => {
+          btns.forEach(x => x.classList.remove('active'));
+          b.classList.add('active');
+          const style = b.dataset.style;
+          frame.className = 'poem-frame ' + classMap[style];
+          frame.innerHTML = templates[style];
+        });
+      });
+    })();
+
+    /* ============ SEZIONE 4: TAG TOGGLE ============ */
+    (function () {
+      const lab = document.getElementById('markupLab');
+      const bPlain = document.getElementById('btnPlain');
+      const bTag = document.getElementById('btnTagged');
+      bPlain.addEventListener('click', () => {
+        lab.classList.remove('tagged');
+        bPlain.classList.add('active'); bTag.classList.remove('active');
+      });
+      bTag.addEventListener('click', () => {
+        lab.classList.add('tagged');
+        bTag.classList.add('active'); bPlain.classList.remove('active');
+      });
+    })();
+
+    /* ============ SEZIONE 5: DATI/METADATI ============ */
+    (function () {
+      const items = [
+        { txt: 'Il testo integrale della poesia "Soldati"', correct: 'dato', explain: 'È il contenuto stesso: l\'informazione che si vuole registrare.' },
+        { txt: 'Una parola del testo evidenziata in giallo perché "importante"', correct: 'sem', explain: 'Metadato semantico/strutturale: descrive il significato di una parte del contenuto.' },
+        { txt: 'Il numero di pagina stampato in fondo al foglio', correct: 'tec', explain: 'Metadato tecnico: serve a facilitare l\'accesso e la ricerca nel documento.' },
+        { txt: 'Il codice ISBN riportato sul retro del libro', correct: 'amm', explain: 'Metadato amministrativo: riguarda catalogazione e reperibilità del documento.' },
+        { txt: 'Una freccia scritta a penna con su "controllare la fonte"', correct: 'sem', explain: 'È un\'annotazione che attribuisce un senso aggiuntivo a una parte del testo: metadato semantico/strutturale.' }
+      ];
+      const opts = [
+        { k: 'dato', l: 'Dato' },
+        { k: 'sem', l: 'Metadato semantico' },
+        { k: 'tec', l: 'Metadato tecnico' },
+        { k: 'amm', l: 'Metadato amministrativo' }
+      ];
+      const grid = document.getElementById('sortGrid');
+      const scoreLine = document.getElementById('scoreLine');
+      let score = 0, answered = 0;
+      items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'sort-card';
+        const optsHtml = opts.map(o => `<button class="opt-btn" data-k="${o.k}">${o.l}</button>`).join('');
+        card.innerHTML = `<div class="txt">${item.txt}</div><div class="opts">${optsHtml}</div><div class="fb" data-fb></div>`;
+        const fb = card.querySelector('[data-fb]');
+        const buttons = card.querySelectorAll('.opt-btn');
+        let solved = false;
+        buttons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (solved) return;
+            const ok = btn.dataset.k === item.correct;
+            solved = true; answered++;
+            buttons.forEach(b => b.disabled = true);
+            if (ok) {
+              btn.style.borderColor = 'var(--tag)'; btn.style.background = 'var(--tag-soft)'; btn.style.color = 'var(--tag)';
+              fb.className = 'fb show correct';
+              fb.textContent = '✓ Esatto — ' + item.explain;
+              score++;
+            } else {
+              btn.style.borderColor = 'var(--brick)'; btn.style.background = 'var(--brick-soft)'; btn.style.color = 'var(--brick)';
+              fb.className = 'fb show wrong';
+              fb.textContent = '✗ Non proprio — ' + item.explain;
+            }
+            scoreLine.textContent = `${score} / ${items.length} corrette`;
+          });
+        });
+        grid.appendChild(card);
+      });
+    })();
+
+    /* ============ SEZIONE 6: WYSIWYG / WYSIWYM ============ */
+    (function () {
+      document.getElementById('wgBold').addEventListener('click', () => document.execCommand('bold'));
+      document.getElementById('wgItalic').addEventListener('click', () => document.execCommand('italic'));
+      document.getElementById('btnCompile').addEventListener('click', (e) => {
+        document.getElementById('latexOut').classList.add('show');
+        e.target.textContent = 'Ricompila →';
+      });
+    })();
+
+    /* ============ SEZIONE 7: MARKDOWN PLAYGROUND ============ */
+    (function () {
+      function mdToHtml(src) {
+        let s = src.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const lines = s.split('\n');
+        let html = '', inList = false, inQuote = false;
+        const inlineFmt = (t) => t
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/(^|[^*])\*(?!\*)([^*]+?)\*(?!\*)/g, '$1<em>$2</em>')
+          .replace(/`([^`]+?)`/g, '<code>$1</code>')
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+        lines.forEach(line => {
+          const trimmed = line.trim();
+          if (/^---+$/.test(trimmed)) {
+            if (inList) { html += '</ul>'; inList = false; }
+            if (inQuote) { html += '</blockquote>'; inQuote = false; }
+            html += '<hr>'; return;
+          }
+          const h = trimmed.match(/^(#{1,3})\s+(.*)$/);
+          if (h) {
+            if (inList) { html += '</ul>'; inList = false; }
+            if (inQuote) { html += '</blockquote>'; inQuote = false; }
+            const lvl = h[1].length;
+            html += `<h${lvl}>${inlineFmt(h[2])}</h${lvl}>`; return;
+          }
+          if (/^>\s?/.test(trimmed)) {
+            if (inList) { html += '</ul>'; inList = false; }
+            if (!inQuote) { html += '<blockquote>'; inQuote = true; }
+            html += `<p>${inlineFmt(trimmed.replace(/^>\s?/, ''))}</p>`; return;
+          } else if (inQuote) { html += '</blockquote>'; inQuote = false; }
+          const li = trimmed.match(/^[-*]\s+(.*)$/);
+          if (li) {
+            if (!inList) { html += '<ul>'; inList = true; }
+            html += `<li>${inlineFmt(li[1])}</li>`; return;
+          } else if (inList) { html += '</ul>'; inList = false; }
+          if (trimmed === '') { return; }
+          html += `<p>${inlineFmt(trimmed)}</p>`;
+        });
+        if (inList) html += '</ul>';
+        if (inQuote) html += '</blockquote>';
+        return html;
+      }
+
+      const input = document.getElementById('mdInput');
+      const output = document.getElementById('mdOutput');
+      function update() { output.innerHTML = mdToHtml(input.value); }
+      input.addEventListener('input', update);
+
+      const presets = {
+        poesia: `# Soldati\n\n> Si sta come\n> d'autunno\n> sugli alberi\n> le foglie.\n\n*Giuseppe Ungaretti*`,
+        appunti: `## Appunti — linguaggi di markup\n\nUn **linguaggio di markup** aggiunge tag a un testo per arricchirne il contenuto informativo.\n\n- serve ad attribuire un *significato*\n- serve a definire l'*aspetto*\n- serve ad aggiungere *funzionalità* (link, ricerca)\n\nFonte: \`Unità B1, p.144\``,
+        lista: `# Cosa serve per la verifica\n\n- quaderno degli appunti\n- calcolatrice\n- penna nera o blu\n\n---\n\nRicorda: \`Markdown\` non usa le etichette come \`<tag>\`.`
+      };
+      document.querySelectorAll('[data-preset]').forEach(b => {
+        b.addEventListener('click', () => {
+          input.value = presets[b.dataset.preset];
+          update();
+        });
+      });
+      input.value = presets.poesia;
+      update();
+    })();
+
+    /* ============ SEZIONE 8: SENSI ============ */
+    (function () {
+      // TTS
+      const btnSpeak = document.getElementById('btnSpeak');
+      btnSpeak.addEventListener('click', () => {
+        if (!('speechSynthesis' in window)) {
+          btnSpeak.textContent = 'TTS non supportato dal browser';
+          return;
+        }
+        const text = "Soldati. Si sta come d'autunno sugli alberi le foglie. Giuseppe Ungaretti.";
+        const u = new SpeechSynthesisUtterance(text);
+        const voices = speechSynthesis.getVoices();
+        const itVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('it'));
+        if (itVoice) u.voice = itVoice;
+        u.lang = itVoice ? itVoice.lang : 'it-IT';
+        u.rate = 0.95;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      });
+
+      // Braille (Grade 1, mapping standard lettere a-z su Unicode Braille Patterns)
+      const map = {
+        a: '⠁', b: '⠃', c: '⠉', d: '⠙', e: '⠑', f: '⠋', g: '⠛', h: '⠓', i: '⠊', j: '⠚',
+        k: '⠅', l: '⠇', m: '⠍', n: '⠝', o: '⠕', p: '⠏', q: '⠟', r: '⠗', s: '⠎', t: '⠞',
+        u: '⠥', v: '⠧', w: '⠺', x: '⠭', y: '⠽', z: '⠵', ' ': ' '
+      };
+      const brailleOut = document.getElementById('brailleOut');
+      const brailleInput = document.getElementById('brailleInput');
+      const dotgrid = document.getElementById('dotgrid');
+      const dotLabel = document.getElementById('dotLetterLabel');
+      // costruisco i 6 pallini una volta sola
+      for (let i = 0; i < 6; i++) { const dot = document.createElement('i'); dotgrid.appendChild(dot); }
+      const dotOrder = [0, 3, 1, 4, 2, 5]; // colonna sx (1,2,3) poi dx (4,5,6) -> mapping su grid-template 2 colonne x 3 righe
+      function renderBraille() {
+        const val = brailleInput.value.toLowerCase();
+        let out = '';
+        let lastChar = null;
+        for (const ch of val) {
+          if (map[ch]) { out += map[ch]; if (ch !== ' ') lastChar = ch; }
+          else { out += ch; }
+        }
+        brailleOut.textContent = out || '—';
+        const dots = dotgrid.querySelectorAll('i');
+        if (lastChar && map[lastChar]) {
+          const code = map[lastChar].codePointAt(0) - 0x2800;
+          // bit0..5 = dot1..dot6 ; posizione griglia: col1 righe1-3 = dot1,2,3 ; col2 righe1-3 = dot4,5,6
+          const bits = [0, 1, 2, 3, 4, 5].map(b => (code >> b) & 1);
+          // ordine visivo desiderato nel grid (row-major, 2 col x 3 row): dot1,dot4,dot2,dot5,dot3,dot6
+          const visualOrder = [0, 3, 1, 4, 2, 5];
+          visualOrder.forEach((bitIdx, i) => {
+            dots[i].classList.toggle('on', !!bits[bitIdx]);
+          });
+          dotLabel.textContent = `lettera “${lastChar}” → ${map[lastChar]}`;
+        } else {
+          dots.forEach(d => d.classList.remove('on'));
+          dotLabel.textContent = 'scrivi una lettera';
+        }
+      }
+      brailleInput.addEventListener('input', renderBraille);
+      renderBraille();
+    })();
+
+
+  </script>
+</body>
+
+</html>
