@@ -4,358 +4,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Git & GitHub — dalla scuola a casa</title>
+  <title>Uso di GitHub </title>
+  <meta name="description" content="Percorso interattivo su Git, GitHub, GitHub Pages e il collegamento con VS Code">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
-    :root {
-      --bg: #F5F6F1;
-      --panel: #FFFFFF;
-      --ink: #1B2430;
-      --sub: #5B6472;
-      --line: #DADFE1;
-      --local: #2E7D6B;
-      --remote: #7C5CE0;
-      --amber: #E1972E;
-      --radius: 14px;
-      box-sizing: border-box;
-      padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* ---------- HERO: box terminale a destra ---------- */
+    .hero .meta span.brick {
+      border-color: #e7c6bc;
+      color: var(--brick);
+      background: var(--brick-soft)
     }
 
-    html {
-      scroll-padding-top: env(safe-area-inset-top, 0px);
-      scroll-behavior: smooth;
-    }
-
-    * {
-      margin: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    code,
-    .mono {
-      font-family: 'IBM Plex Mono', monospace;
-    }
-
-    .wrap {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    section {
-      padding: 64px 0;
-    }
-
-    h1,
-    h2,
-    h3 {
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-
-    p {
-      color: var(--sub);
-      max-width: 62ch;
-    }
-
-    a {
-      color: var(--remote);
-    }
-
-    /* HERO */
-    .hero {
-      padding: 72px 0 40px;
-      text-align: left;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.2rem, 6vw, 3.4rem);
-      line-height: 1.05;
-    }
-
-    .hero .accent {
-      color: var(--local);
-    }
-
-    .hero p {
-      font-size: 1.05rem;
-      margin-top: 14px;
-    }
-
-    .hero-graph {
-      width: 100%;
-      height: auto;
-      margin-top: 36px;
-      overflow: visible;
-    }
-
-    .dot {
-      fill: var(--local);
-    }
-
-    .dot.remote {
-      fill: var(--remote);
-    }
-
-    .branchline {
-      stroke: var(--line);
-      stroke-width: 2;
-      fill: none;
-    }
-
-    .pulse {
-      stroke: var(--local);
-      stroke-width: 2;
-      fill: none;
-      stroke-dasharray: 6 10;
-      animation: flow 3s linear infinite;
-    }
-
-    @keyframes flow {
-      to {
-        stroke-dashoffset: -160;
-      }
-    }
-
-    .commit-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      fill: var(--sub);
-      opacity: 0;
-      animation: fadein .4s ease forwards;
-    }
-
-    /* SECTION HEADERS */
-    .section-head {
-      margin-bottom: 28px;
-    }
-
-    .section-head .kicker {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      color: var(--sub);
-    }
-
-    .section-head h2 {
-      font-size: 1.7rem;
-      margin-top: 4px;
-    }
-
-    /* SYNC DIAGRAM */
-    .sync-wrap {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 28px;
-      margin-top: 8px;
-    }
-
+    /* ---------- SYNC DIAGRAM ---------- */
     .sync-svg {
       width: 100%;
-      height: auto;
+      height: auto
     }
 
     .node-box {
-      fill: var(--panel);
+      fill: #fff;
       stroke: var(--line);
-      stroke-width: 1.5;
+      stroke-width: 1.5
     }
 
     .node-label {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: var(--sans);
       font-weight: 600;
       font-size: 14px;
-      fill: var(--ink);
+      fill: var(--ink)
     }
 
     .node-sub {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       font-size: 10px;
-      fill: var(--sub);
+      fill: var(--ink-soft)
     }
 
     .arrow-path {
-      stroke: var(--remote);
+      stroke: var(--tag);
       stroke-width: 2;
       fill: none;
       stroke-dasharray: 5 7;
-      animation: flow 2.4s linear infinite;
+      animation: flow 2.4s linear infinite
     }
 
     .arrow-path.rev {
-      stroke: var(--local);
-      animation-direction: reverse;
+      stroke: var(--blue);
+      animation-direction: reverse
     }
 
     .cloud-icon {
       fill: none;
-      stroke: var(--remote);
-      stroke-width: 2;
+      stroke: var(--blue);
+      stroke-width: 2
     }
 
-    /* STEP CARDS */
+    @keyframes flow {
+      to {
+        stroke-dashoffset: -160
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .arrow-path {
+        animation: none
+      }
+    }
+
+    /* ---------- STEP ACCORDION ---------- */
     .steps {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px
     }
 
     .step {
-      background: var(--panel);
+      background: #fff;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      overflow: hidden;
+      overflow: hidden
     }
 
     .step-head {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 18px 20px;
+      padding: 16px 18px;
       cursor: pointer;
       user-select: none;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font: inherit
     }
 
     .step-num {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       font-size: 13px;
-      color: var(--local);
-      border: 1px solid var(--local);
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
+      color: var(--tag);
+      border: 1px solid var(--tag);
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      flex-shrink: 0
     }
 
     .step-head h3 {
-      font-size: 1.02rem;
-      font-weight: 500;
+      font-size: 16px;
+      font-weight: 600;
       flex: 1;
+      margin: 0;
+      color: var(--ink)
     }
 
     .chev {
-      width: 10px;
-      height: 10px;
-      border-right: 2px solid var(--sub);
-      border-bottom: 2px solid var(--sub);
+      width: 9px;
+      height: 9px;
+      border-right: 2px solid var(--ink-soft);
+      border-bottom: 2px solid var(--ink-soft);
       transform: rotate(45deg);
-      transition: transform .25s ease;
-      flex-shrink: 0;
+      transition: transform .2s ease;
+      flex-shrink: 0
     }
 
     .step.open .chev {
-      transform: rotate(-135deg);
+      transform: rotate(-135deg)
     }
 
     .step-body {
       max-height: 0;
       overflow: hidden;
-      transition: max-height .3s ease;
+      transition: max-height .3s ease
     }
 
     .step-body-inner {
-      padding: 0 20px 20px 62px;
+      padding: 0 18px 18px 58px
     }
 
     .step-body-inner p {
-      font-size: .92rem;
+      font-size: 15px;
       margin: 0 0 10px;
+      color: var(--ink-soft)
     }
 
-    .tag {
-      display: inline-block;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      background: var(--bg);
-      border: 1px solid var(--line);
-      padding: 3px 8px;
-      border-radius: 6px;
-      margin: 2px 4px 2px 0;
-    }
-
-    /* MOCK BROWSER for signup / repo form */
+    /* ---------- MOCK BROWSER (registrazione / repo form) ---------- */
     .mock {
-      background: var(--bg);
+      background: var(--paper);
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 8px;
       padding: 14px;
-      margin-top: 6px;
+      margin-top: 4px
     }
 
     .mock-bar {
       display: flex;
       gap: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 10px
     }
 
     .mock-bar span {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--line);
+      background: var(--line)
     }
 
     .mock-field {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      background: var(--panel);
+      font-family: var(--mono);
+      font-size: 12.5px;
+      background: #fff;
       border: 1px solid var(--line);
       border-radius: 6px;
       padding: 8px 10px;
       margin-bottom: 8px;
-      color: var(--sub);
+      color: var(--ink-soft)
     }
 
     .mock-field b {
       color: var(--ink);
-      font-weight: 600;
+      font-weight: 600
     }
 
-    /* PAGES TOGGLE DEMO */
+    /* ---------- PAGES TOGGLE DEMO ---------- */
     .pages-demo {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 28px;
-      margin-top: 8px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
+      margin-top: 8px
     }
 
     .toggle-row {
       display: flex;
       align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
+      gap: 14px;
+      flex-wrap: wrap
     }
 
     .toggle {
       position: relative;
-      width: 52px;
-      height: 28px;
+      width: 50px;
+      height: 27px;
       border-radius: 20px;
       background: var(--line);
       cursor: pointer;
       flex-shrink: 0;
       transition: background .25s;
+      border: none
     }
 
     .toggle::after {
@@ -363,182 +227,181 @@
       position: absolute;
       top: 3px;
       left: 3px;
-      width: 22px;
-      height: 22px;
+      width: 21px;
+      height: 21px;
       border-radius: 50%;
-      background: var(--panel);
-      transition: transform .25s;
+      background: #fff;
+      transition: transform .25s
     }
 
     .toggle.on {
-      background: var(--local);
+      background: var(--tag)
     }
 
     .toggle.on::after {
-      transform: translateX(24px);
+      transform: translateX(23px)
     }
 
     .toggle-label {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       font-size: 13px;
-      color: var(--sub);
+      color: var(--ink-soft)
     }
 
     .browser-preview {
       border: 1px solid var(--line);
-      border-radius: 10px;
-      overflow: hidden;
+      border-radius: 8px;
+      overflow: hidden
     }
 
     .browser-top {
-      background: var(--bg);
+      background: var(--paper);
       padding: 8px 12px;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       font-size: 11px;
-      color: var(--sub);
+      color: var(--ink-soft);
       border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 8px
     }
 
     .browser-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--line);
+      background: var(--line)
     }
 
     .browser-url {
-      background: var(--panel);
+      background: #fff;
       padding: 4px 8px;
       border-radius: 5px;
-      flex: 1;
+      flex: 1
     }
 
     .browser-status {
-      background: #00000006;
-      padding: 28px;
+      padding: 26px;
       text-align: center;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       font-size: 13px;
-      color: var(--sub);
-      transition: all .3s;
+      color: var(--ink-soft);
+      background: #fcfbf8;
+      transition: color .3s
     }
 
     .browser-status.live {
-      color: var(--local);
+      color: var(--tag)
     }
 
-    /* VS CODE MOCKUP */
+    /* ---------- VS CODE MOCKUP ---------- */
     .vsc-window {
-      background: #1e1e1e;
+      background: var(--ink);
       border-radius: 10px;
       overflow: hidden;
-      font-family: 'Space Grotesk', sans-serif;
-      color: #cccccc;
-      border: 1px solid #000;
+      font-family: var(--sans);
+      color: #cccccc
     }
 
     .vsc-titlebar {
-      background: #323233;
+      background: #2c2a26;
       padding: 8px 12px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 6px
     }
 
     .vsc-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: #555;
+      background: #565248
     }
 
     .vsc-titletext {
       margin-left: 8px;
       font-size: 11px;
-      color: #9d9d9d;
-      font-family: 'IBM Plex Mono', monospace;
+      color: #9d9a91;
+      font-family: var(--mono)
     }
 
     .vsc-body {
       display: flex;
-      min-height: 190px;
+      min-height: 190px
     }
 
     .vsc-activitybar {
-      width: 46px;
-      background: #333333;
+      width: 44px;
+      background: #2c2a26;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 10px;
       gap: 16px;
-      flex-shrink: 0;
+      flex-shrink: 0
     }
 
     .vsc-icon {
       position: relative;
-      font-size: 18px;
-      color: #8a8a8a;
+      font-size: 17px;
+      color: #8a8579;
       width: 100%;
       text-align: center;
-      padding: 4px 0;
+      padding: 4px 0
     }
 
     .vsc-icon.active {
-      color: #ffffff;
-      border-left: 2px solid #ffffff;
+      color: #fff;
+      border-left: 2px solid #fff
     }
 
     .vsc-badge {
       position: absolute;
       top: -2px;
       right: 8px;
-      background: #4d9de0;
+      background: var(--blue);
       color: #fff;
       font-size: 9px;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       border-radius: 8px;
-      padding: 1px 4px;
+      padding: 1px 4px
     }
 
     .vsc-callout {
       position: absolute;
       top: -2px;
-      left: 30px;
+      left: 28px;
       color: var(--amber);
       font-weight: 700;
       font-size: 13px;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono)
     }
 
     .vsc-panel {
       flex: 1;
-      background: #252526;
-      padding: 14px 16px;
+      background: #262420;
+      padding: 14px 16px
     }
 
     .vsc-panel-header {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       font-size: 10.5px;
-      color: #9d9d9d;
+      color: #9d9a91;
       letter-spacing: .04em;
-      margin-bottom: 12px;
+      margin-bottom: 12px
     }
 
     .vsc-changed-label {
       font-size: 12px;
-      color: #9d9d9d;
-      margin-bottom: 6px;
+      color: #9d9a91;
+      margin-bottom: 6px
     }
 
     .vsc-file-row {
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       font-size: 12.5px;
       color: #cccccc;
-      padding: 3px 0;
+      padding: 3px 0
     }
 
     .vsc-badge-m {
@@ -547,114 +410,123 @@
       text-align: center;
       color: #e2c08d;
       font-weight: 600;
-      margin-right: 6px;
+      margin-right: 6px
     }
 
     .vsc-commit-box {
       margin-top: 16px;
-      position: relative;
+      position: relative
     }
 
     .vsc-input {
       width: 100%;
-      background: #3c3c3c;
-      border: 1px solid #4a4a4a;
+      background: #3c3a35;
+      border: 1px solid #4a473f;
       color: #cccccc;
       font-size: 12px;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: var(--sans);
       padding: 7px 9px;
       border-radius: 3px;
-      margin-bottom: 8px;
+      margin-bottom: 8px
     }
 
     .vsc-commit-btn {
       position: relative;
       width: 100%;
-      background: #0e639c;
+      background: var(--tag);
       color: #fff;
       border: none;
       font-size: 12.5px;
       padding: 7px;
       border-radius: 3px;
       cursor: default;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: var(--sans)
     }
 
     .vsc-statusbar {
-      background: #007acc;
+      background: var(--tag);
       color: #fff;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--mono);
       font-size: 11.5px;
       padding: 5px 14px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: center
     }
 
     .vsc-sync-btn {
       position: relative;
-      padding-right: 22px;
+      padding-right: 22px
     }
 
     .vsc-legend {
       list-style: none;
-      margin-top: 16px;
+      margin: 16px 0 0;
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 6px
     }
 
     .vsc-legend li {
-      font-size: .88rem;
-      color: var(--sub);
+      font-size: 14.5px;
+      color: var(--ink-soft)
     }
 
     .vsc-legend b {
-      color: var(--amber);
+      color: var(--amber)
     }
 
-    .vsc-legend code {
-      color: var(--ink);
+    /* ---------- CHEATSHEET ---------- */
+    .grid-cheat {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-top: 8px
     }
 
-    /* TERMINAL SIM */
-    .term-wrap {
-      background: var(--panel);
+    .cheat-card {
+      background: #fff;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      padding: 24px;
-      margin-top: 8px;
+      padding: 16px
     }
 
-    .term {
-      background: #11151A;
-      border-radius: 10px;
-      padding: 16px;
-      min-height: 150px;
-      font-family: 'IBM Plex Mono', monospace;
+    .cheat-card code {
+      display: block;
       font-size: 13px;
-      color: #D8E0E6;
+      color: var(--tag);
+      margin-bottom: 6px
+    }
+
+    .cheat-card span {
+      font-size: 13.5px;
+      color: var(--ink-soft)
+    }
+
+    /* ---------- TERMINAL (riusa .tagviz) ---------- */
+    .term-log {
+      min-height: 90px
     }
 
     .term-line {
       opacity: 0;
-      animation: fadein .25s ease forwards;
+      animation: fadein .25s ease forwards
     }
 
     .term-line .prompt {
-      color: var(--local);
+      color: #7FD4A8
     }
 
     @keyframes fadein {
       from {
         opacity: 0;
-        transform: translateY(3px);
+        transform: translateY(3px)
       }
 
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0)
       }
     }
 
@@ -662,132 +534,61 @@
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .btn {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12.5px;
-      background: var(--bg);
-      border: 1px solid var(--line);
-      color: var(--ink);
-      padding: 9px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: border-color .2s;
-    }
-
-    .btn:hover {
-      border-color: var(--remote);
-    }
-
-    .btn:focus-visible,
-    .step-head:focus-visible,
-    .toggle:focus-visible {
-      outline: 2px solid var(--remote);
-      outline-offset: 2px;
-    }
-
-    .btn.ghost {
-      color: var(--sub);
-    }
-
-    /* CHEATSHEET */
-    .grid-cheat {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .cheat-card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 16px;
-    }
-
-    .cheat-card code {
-      display: block;
-      font-size: 13px;
-      color: var(--local);
-      margin-bottom: 6px;
-    }
-
-    .cheat-card span {
-      font-size: .85rem;
-      color: var(--sub);
-    }
-
-    footer {
-      padding: 40px 0 60px;
-      border-top: 1px solid var(--line);
-      margin-top: 20px;
-    }
-
-    footer p {
-      font-size: .85rem;
-    }
-
-    @media (max-width:600px) {
-      section {
-        padding: 44px 0;
-      }
-
-      .step-body-inner {
-        padding-left: 20px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-
-      .pulse,
-      .arrow-path,
-      .term-line {
-        animation: none !important;
-        opacity: 1 !important;
-        stroke-dashoffset: 0 !important;
-      }
+      margin-top: 16px
     }
   </style>
 </head>
 
 <body>
 
-  <div class="wrap">
+  <a href="#main" class="skip-link">Vai al contenuto</a>
+
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="#top"> <span class="brk">1</span> · GitHub</a>
+      <nav class="pillnav" id="pillnav" aria-label="Sezioni">
+        <a href="#flusso">Flusso</a>
+        <a href="#account">Account</a>
+        <a href="#repository">Repository</a>
+        <a href="#vscode">VS Code</a>
+        <a href="#comandi">Comandi</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!--commento di test-->
 
     <!-- HERO -->
-    <section class="hero">
-      <h1>Git & GitHub<br><span class="accent">scuola ↔ casa ↔ web</span></h1>
-      <p>Come mettere online le tue pagine e tenere sincronizzato il lavoro che fai a scuola con quello che fai a casa.
-      </p>
-      <svg class="hero-graph" viewBox="0 0 860 90" preserveAspectRatio="xMinYMid meet">
-        <path class="branchline" d="M20 45 H840" />
-        <path class="pulse" d="M20 45 H840" />
-        <g>
-          <circle class="dot" cx="60" cy="45" r="6" />
-          <text class="commit-label" x="48" y="70" style="animation-delay:.1s">init</text>
-          <circle class="dot" cx="230" cy="45" r="6" />
-          <text class="commit-label" x="205" y="70" style="animation-delay:.5s">add index.html</text>
-          <circle class="dot remote" cx="430" cy="45" r="7" />
-          <text class="commit-label" x="395" y="70" style="animation-delay:.9s">push → GitHub</text>
-          <circle class="dot" cx="620" cy="45" r="6" />
-          <text class="commit-label" x="585" y="70" style="animation-delay:1.3s">pull da casa</text>
-          <circle class="dot remote" cx="800" cy="45" r="7" />
-          <text class="commit-label" x="750" y="70" style="animation-delay:1.7s">Pages live</text>
-        </g>
-      </svg>
+    <section class="hero" id="top">
+      <div class="hero-grid">
+        <div>
+          <h1>Dal computer al <span class="accent">Web</span>, passando da GitHub.</h1>
+          <p class="sub">Come pubblicare le tue pagine online e tenere sincronizzato il lavoro tra scuola e casa.</p>
+          <div class="meta">
+            <span>Creazione di un sito web</span>
+            <span>pp. 200 - 204</span>
+          </div>
+        </div>
+        <div class="tagviz">
+          <div class="win"><i></i><i></i><i></i></div>
+          <pre><span class="c">$</span> <span class="t">git</span> clone &lt;url&gt;
+<span class="c">$</span> <span class="t">git</span> add .
+<span class="c">$</span> <span class="t">git</span> commit -m <span class="a">"..."</span>
+<span class="c">$</span> <span class="t">git</span> push</pre>
+        </div>
+      </div>
     </section>
 
     <!-- FLUSSO -->
     <section id="flusso">
       <div class="section-head">
-        <div class="kicker">01 — il flusso</div>
+        <div class="kicker">Il flusso</div>
         <h2>Un solo progetto, due computer</h2>
+        <p class="lead">GitHub è la "cassaforte" online del progetto: scuola e casa si sincronizzano passando da lì,
+          mai direttamente tra loro.</p>
       </div>
-      <p>GitHub è la "cassaforte" online del tuo progetto. Scuola e casa si sincronizzano passando da lì — mai
-        direttamente tra loro.</p>
-      <div class="sync-wrap">
+      <div class="card">
         <svg class="sync-svg" viewBox="0 0 700 220" preserveAspectRatio="xMidYMid meet">
           <rect class="node-box" x="20" y="80" width="150" height="60" rx="10" />
           <text class="node-label" x="95" y="105" text-anchor="middle">🏫 Scuola</text>
@@ -804,31 +605,33 @@
           <text class="node-sub" x="350" y="165" text-anchor="middle">repository remoto</text>
 
           <path class="arrow-path" d="M170 95 Q 260 60 300 65" marker-end="url(#arrhead)" />
-          <path class="arrow-path rev" d="M400 65 Q 470 70 530 95" marker-end="url(#arrhead)" />
+          <path class="arrow-path rev" d="M400 65 Q 470 70 530 95" marker-end="url(#arrhead2)" />
           <text class="node-sub" x="215" y="52" text-anchor="middle">push</text>
           <text class="node-sub" x="465" y="52" text-anchor="middle">pull</text>
           <defs>
             <marker id="arrhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-              <path d="M0,0 L8,4 L0,8 z" fill="var(--remote)" />
+              <path d="M0,0 L8,4 L0,8 z" fill="#0B6E4F" />
+            </marker>
+            <marker id="arrhead2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill="#2451A3" />
             </marker>
           </defs>
         </svg>
       </div>
     </section>
 
-    <!-- REGISTRAZIONE -->
-    <section id="registrazione">
+    <!-- ACCOUNT -->
+    <section id="account">
       <div class="section-head">
-        <div class="kicker">02 — account</div>
+        <div class="kicker">Account</div>
         <h2>Registrati con l'account scuola</h2>
       </div>
       <div class="steps">
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">1</div>
-            <h3>Vai su github.com → Sign up</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">1</span>
+            <h3>Vai su github.com → Sign up</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
               <div class="mock">
@@ -841,23 +644,22 @@
           </div>
         </div>
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">2</div>
-            <h3>Verifica l'email della scuola</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">2</span>
+            <h3>Verifica l'email della scuola</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
-              <p>Apri la webmail della scuola, clicca il link di conferma. Senza verifica l'account resta bloccato.</p>
+              <p>Apri la webmail della scuola, clicca il link di conferma. Senza verifica l'account resta bloccato.
+              </p>
             </div>
           </div>
         </div>
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">3</div>
-            <h3>Piano Free va benissimo</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">3</span>
+            <h3>Piano Free va benissimo</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
               <p>Salta le proposte a pagamento. Repository pubblici illimitati, GitHub Pages incluso.</p>
@@ -870,16 +672,15 @@
     <!-- REPOSITORY -->
     <section id="repository">
       <div class="section-head">
-        <div class="kicker">03 — carica il sito</div>
+        <div class="kicker">Carica il sito</div>
         <h2>Crea un repository e pubblica</h2>
       </div>
       <div class="steps">
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">1</div>
-            <h3>New repository</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">1</span>
+            <h3>New repository</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
               <div class="mock">
@@ -892,36 +693,35 @@
           </div>
         </div>
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">2</div>
-            <h3>Add file → Upload files</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">2</span>
+            <h3>Add file → Upload files</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
-              <p>Trascina <code>index.html</code> (e le altre risorse) nella pagina, poi <span class="tag">Commit
+              <p>Trascina <code>index.html</code> (e le altre risorse) nella pagina, poi <span class="tagchip">Commit
                   changes</span>. Va bene anche senza VS Code, direttamente dal browser.</p>
             </div>
           </div>
         </div>
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">3</div>
-            <h3>Settings → Pages</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">3</span>
+            <h3>Settings → Pages</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
-              <p>Source: <span class="tag">Deploy from a branch</span> — Branch: <span class="tag">main / (root)</span>
-                → Save. Prova qui sotto:</p>
+              <p>Source: <span class="tagchip">Deploy from a branch</span> — Branch: <span class="tagchip">main /
+                  (root)</span> → Save. Prova qui sotto:</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="pages-demo">
+      <div class="card pages-demo">
         <div class="toggle-row">
-          <div class="toggle" id="pagesToggle" tabindex="0" role="switch" aria-checked="false"></div>
+          <button class="toggle" id="pagesToggle" role="switch" aria-checked="false"
+            aria-label="Attiva GitHub Pages"></button>
           <span class="toggle-label" id="toggleLabel">GitHub Pages: OFF</span>
         </div>
         <div class="browser-preview">
@@ -937,95 +737,90 @@
     <!-- VSCODE -->
     <section id="vscode">
       <div class="section-head">
-        <div class="kicker">04 — vs code</div>
+        <div class="kicker">VS Code</div>
         <h2>Collega VS Code a GitHub</h2>
+        <p class="lead">Niente plugin obbligatori: VS Code parla già con Git "di fabbrica". Serve solo installare Git
+          sul computer (è un programma di sistema, non un'estensione).</p>
       </div>
-      <p style="margin-bottom:20px;">Niente plugin obbligatori: VS Code parla già con Git "di fabbrica". Serve solo
-        installare Git sul computer (è un programma di sistema, non un'estensione).</p>
       <div class="steps">
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">1</div>
-            <h3>Installa Git sul computer</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">1</span>
+            <h3>Installa Git sul computer</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
               <p>Scarica da <a href="https://git-scm.com" target="_blank" rel="noopener">git-scm.com</a> — è un
                 programma del sistema operativo, non un'estensione di VS Code. Una volta installato, VS Code se ne
                 accorge da solo e attiva l'icona <b>Controllo Git</b> nella barra laterale. Su PC scuola probabilmente
                 c'è già.</p>
-              <p style="margin-top:8px;">L'unica estensione facoltativa è <span class="tag">GitHub Pull Requests and
-                  Issues</span>, utile solo per funzioni avanzate (Pull Request, Issue). Per push/pull/commit non serve.
-              </p>
+              <p>L'unica estensione facoltativa è <span class="tagchip">GitHub Pull Requests and Issues</span>, utile
+                solo per funzioni avanzate (Pull Request, Issue). Per push/pull/commit non serve.</p>
             </div>
           </div>
         </div>
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">2</div>
-            <h3>Accedi con l'account GitHub</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">2</span>
+            <h3>Accedi con l'account GitHub</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
-              <p>Icona Account (in basso a sinistra) → <span class="tag">Sign in with GitHub</span> → autorizza dal
-                browser. Va rifatto su ogni computer diverso, scuola e casa.</p>
+              <p>Icona Account (in basso a sinistra) → <span class="tagchip">Sign in with GitHub</span> → autorizza
+                dal browser. Va rifatto su ogni computer diverso, scuola e casa.</p>
             </div>
           </div>
         </div>
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">3</div>
-            <h3>Clona il repository</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">3</span>
+            <h3>Clona il repository</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
-              <p><span class="tag">Ctrl/Cmd+Shift+P</span> → <span class="tag">Git: Clone</span> → incolla l'URL del
-                repository (da GitHub, bottone verde <span class="tag">Code</span>) → scegli dove salvare la cartella
-                sul disco. Fallo una volta su ogni PC, scuola e casa.</p>
+              <p><span class="tagchip">Ctrl/Cmd+Shift+P</span> → <span class="tagchip">Git: Clone</span> → incolla
+                l'URL del repository (da GitHub, bottone verde <span class="tagchip">Code</span>) → scegli dove
+                salvare la cartella sul disco. Fallo una volta su ogni PC, scuola e casa.</p>
             </div>
           </div>
         </div>
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">4</div>
-            <h3>Apri quella cartella, non un'altra</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">4</span>
+            <h3>Apri quella cartella, non un'altra</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
-              <p><span class="tag">File → Apri cartella</span> e seleziona proprio la cartella appena clonata. È il
-                passaggio che si dimentica più spesso: se lavori su una cartella diversa (es. sul Desktop, creata da
-                zero), VS Code non ha idea che debba parlare con GitHub — il pannello Controllo Git resta vuoto o
+              <p><span class="tagchip">File → Apri cartella</span> e seleziona proprio la cartella appena clonata. È
+                il passaggio che si dimentica più spesso: se lavori su una cartella diversa (es. sul Desktop, creata
+                da zero), VS Code non ha idea che debba parlare con GitHub — il pannello Controllo Git resta vuoto o
                 scollegato.</p>
             </div>
           </div>
         </div>
         <div class="step">
-          <div class="step-head" tabindex="0" role="button" aria-expanded="false">
-            <div class="step-num">5</div>
-            <h3>Ogni volta che lavori</h3>
-            <div class="chev"></div>
-          </div>
+          <button class="step-head" aria-expanded="false">
+            <span class="step-num">5</span>
+            <h3>Ogni volta che lavori</h3><span class="chev"></span>
+          </button>
           <div class="step-body">
             <div class="step-body-inner">
               <p>Inizio sessione → <b>Pull</b> (scarica quello che hai fatto sull'altro PC). Fine sessione →
-                <b>Commit</b> + <b>Push</b> (carica su GitHub). Così l'altro computer troverà sempre l'ultima versione.
+                <b>Commit</b> + <b>Push</b> (carica su GitHub). Così l'altro computer troverà sempre l'ultima
+                versione.
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="section-head" style="margin-top:36px;">
-        <div class="kicker">via interfaccia grafica</div>
-        <h2 style="font-size:1.25rem;">Push e pull senza scrivere comandi</h2>
+      <div class="section-head" style="margin-top:36px">
+        <div class="kicker">Via interfaccia</div>
+        <h2 style="font-size:22px">Push e pull senza scrivere comandi</h2>
+        <p class="lead">Tutto quello che serve è in un unico pannello: <b>Controllo Git</b>, l'icona a forma di ramo
+          nella barra laterale sinistra.</p>
       </div>
-      <p>Tutto quello che serve è in un unico pannello: <b>Controllo Git</b>, l'icona a forma di ramo nella barra
-        laterale sinistra.</p>
-      <div class="sync-wrap">
+      <div class="card">
         <div class="vsc-window">
           <div class="vsc-titlebar"><span class="vsc-dot"></span><span class="vsc-dot"></span><span
               class="vsc-dot"></span><span class="vsc-titletext">mio-portfolio — Visual Studio Code</span></div>
@@ -1044,47 +839,48 @@
               <div class="vsc-file-row"><span class="vsc-badge-m">M</span> style.css</div>
               <div class="vsc-commit-box">
                 <input class="vsc-input" placeholder="Messaggio (es. aggiorna homepage)" readonly>
-                <button class="vsc-commit-btn">✓ Commit <span class="vsc-callout">②</span></button>
+                <div class="vsc-commit-btn">✓ Commit <span class="vsc-callout">②</span></div>
               </div>
             </div>
           </div>
           <div class="vsc-statusbar">
             <span>⑂ main</span>
-            <span class="vsc-sync-btn">↻ pull&nbsp;·&nbsp;push <span class="vsc-callout">③</span></span>
+            <span class="vsc-sync-btn">↻ pull · push <span class="vsc-callout">③</span></span>
           </div>
         </div>
         <ol class="vsc-legend">
           <li><b>①</b> Icona Controllo Git — il numero mostra quante modifiche non ancora salvate hai</li>
-          <li><b>②</b> Scrivi il messaggio, clicca <b>✓ Commit</b> — equivale a <code>git add .</code> +
-            <code>git commit</code> <strong>NB: Se non scrivi il messaggio, il commit si blocca!!</strong>
-          </li>
-          <li><b>③</b> Clicca l'icona di sincronizzazione in basso — scarica e carica insieme, come
-            <code>git pull</code> + <code>git push</code>
-          </li>
+          <li><b>②</b> Scrivi il messaggio, clicca <b>✓ Commit</b> — equivale a <code>git add .</code> + <code>git
+              commit</code></br><strong>NB: Se non scrivi il messaggio, il commit si blocca!!</strong> </li>
+          <li><b>③</b> Clicca l'icona di sincronizzazione in basso — scarica e carica insieme, come <code>git
+              pull</code> + <code>git push</code></li>
         </ol>
       </div>
 
-      <div class="term-wrap">
-        <div class="kicker" style="margin-bottom:4px;">se preferisci i comandi da tastiera</div>
-        <p style="margin-bottom:14px;">Apri il terminale con <span class="tag">Terminale → Nuovo terminale</span> (o
-          <span class="tag">Ctrl+`</span> / <span class="tag">Cmd+`</span>): si apre già posizionato dentro la cartella
-          del progetto. Scrivi un comando alla volta e premi Invio. Prova la sequenza qui sotto:
-        </p>
-        <div class="term" id="term"></div>
+      <div class="section-head" style="margin-top:36px">
+        <div class="kicker">Da tastiera</div>
+        <h2 style="font-size:22px">Se preferisci i comandi</h2>
+        <p class="lead">Apri il terminale con <span class="tagchip">Terminale → Nuovo terminale</span> (o <span
+            class="tagchip">Ctrl+`</span> / <span class="tagchip">Cmd+`</span>): si apre già posizionato dentro la
+          cartella del progetto. Scrivi un comando alla volta e premi Invio. Prova la sequenza qui sotto:</p>
+      </div>
+      <div class="tagviz">
+        <div class="win"><i></i><i></i><i></i></div>
+        <div class="term-log" id="term"></div>
         <div class="term-btns">
-          <button class="btn" data-cmd="pull">git pull</button>
-          <button class="btn" data-cmd="add">git add .</button>
-          <button class="btn" data-cmd="commit">git commit -m "..."</button>
-          <button class="btn" data-cmd="push">git push</button>
-          <button class="btn ghost" id="resetTerm">reset</button>
+          <button class="btn small" data-cmd="pull">git pull</button>
+          <button class="btn small" data-cmd="add">git add .</button>
+          <button class="btn small" data-cmd="commit">git commit -m "..."</button>
+          <button class="btn small" data-cmd="push">git push</button>
+          <button class="btn small ghost" id="resetTerm">reset</button>
         </div>
       </div>
     </section>
 
     <!-- CHEATSHEET -->
-    <section id="cheatsheet">
+    <section id="comandi">
       <div class="section-head">
-        <div class="kicker">05 — promemoria</div>
+        <div class="kicker">Promemoria</div>
         <h2>I comandi che userai sempre</h2>
       </div>
       <div class="grid-cheat">
@@ -1095,76 +891,85 @@
         <div class="cheat-card"><code>git push</code><span>carica su GitHub</span></div>
         <div class="cheat-card"><code>git status</code><span>cosa è cambiato?</span></div>
       </div>
+      <div class="note-callout" style="margin-top:20px">
+        <strong>Attenzione —</strong> l'account GitHub va creato con l'indirizzo
+        <code>nome.cognome.aa@liceodavincitn.it</code>.
+      </div>
     </section>
 
-    <footer>
-      <p> Materiale didattico realizzato con l'assistenza di Claude (Anthropic)</p>
-    </footer>
+  </main>
 
-  </div>
+  <footer>
+    Materiale didattico basato su "Hashtag 2", Modulo B, Linguaggi per il web · Realizzato con l'assistenza di Claude
+    (Anthropic)
+  </footer>
+
+  <script src="site.js"></script>
 
   <script>
-    // Accordion steps
-    document.querySelectorAll('.step-head').forEach(head => {
-      const step = head.parentElement;
-      const body = step.querySelector('.step-body');
-      function toggle() {
-        const isOpen = step.classList.toggle('open');
-        head.setAttribute('aria-expanded', isOpen);
-        body.style.maxHeight = isOpen ? body.scrollHeight + 'px' : '0px';
-      }
-      head.addEventListener('click', toggle);
-      head.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
-    });
+    (function () {
+      "use strict";
 
-    // Pages toggle demo
-    const toggleEl = document.getElementById('pagesToggle');
-    const toggleLabel = document.getElementById('toggleLabel');
-    const browserUrl = document.getElementById('browserUrl');
-    const browserStatus = document.getElementById('browserStatus');
-    function setPages(on) {
-      toggleEl.classList.toggle('on', on);
-      toggleEl.setAttribute('aria-checked', on);
-      toggleLabel.textContent = 'GitHub Pages: ' + (on ? 'ON' : 'OFF');
-      if (on) {
-        browserUrl.textContent = 'mrossi-dev.github.io/mio-portfolio';
-        browserStatus.textContent = '✓ sito pubblicato';
-        browserStatus.classList.add('live');
-      } else {
-        browserUrl.textContent = 'non pubblicato';
-        browserStatus.textContent = '— attiva il toggle per vedere il deploy —';
-        browserStatus.classList.remove('live');
-      }
-    }
-    toggleEl.addEventListener('click', () => setPages(!toggleEl.classList.contains('on')));
-    toggleEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPages(!toggleEl.classList.contains('on')); } });
-
-    // Terminal simulator
-    const term = document.getElementById('term');
-    const cmds = {
-      pull: { p: '~/mio-portfolio', c: 'git pull', out: 'Already up to date.' },
-      add: { p: '~/mio-portfolio', c: 'git add .', out: 'modifiche pronte per il commit' },
-      commit: { p: '~/mio-portfolio', c: 'git commit -m "aggiorna pagina esercizi"', out: '[main a1b2c3d] aggiorna pagina esercizi' },
-      push: { p: '~/mio-portfolio', c: 'git push', out: '→ caricato su GitHub ✓' }
-    };
-    document.querySelectorAll('[data-cmd]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const d = cmds[btn.dataset.cmd];
-        const line1 = document.createElement('div');
-        line1.className = 'term-line';
-        line1.innerHTML = '<span class="prompt">' + d.p + ' $</span> ' + d.c;
-        term.appendChild(line1);
-        const line2 = document.createElement('div');
-        line2.className = 'term-line';
-        line2.style.color = '#8A97A3';
-        line2.style.animationDelay = '.15s';
-        line2.textContent = d.out;
-        term.appendChild(line2);
-        term.scrollTop = term.scrollHeight;
+      /* ---------- Accordion ---------- */
+      document.querySelectorAll('.step-head').forEach(head => {
+        const step = head.parentElement;
+        const body = step.querySelector('.step-body');
+        function toggle() {
+          const isOpen = step.classList.toggle('open');
+          head.setAttribute('aria-expanded', isOpen);
+          body.style.maxHeight = isOpen ? body.scrollHeight + 'px' : '0px';
+        }
+        head.addEventListener('click', toggle);
       });
-    });
-    document.getElementById('resetTerm').addEventListener('click', () => { term.innerHTML = ''; });
+
+      /* ---------- Pages toggle demo ---------- */
+      const toggleEl = document.getElementById('pagesToggle');
+      const toggleLabel = document.getElementById('toggleLabel');
+      const browserUrl = document.getElementById('browserUrl');
+      const browserStatus = document.getElementById('browserStatus');
+      function setPages(on) {
+        toggleEl.classList.toggle('on', on);
+        toggleEl.setAttribute('aria-checked', on);
+        toggleLabel.textContent = 'GitHub Pages: ' + (on ? 'ON' : 'OFF');
+        if (on) {
+          browserUrl.textContent = 'mrossi-dev.github.io/mio-portfolio';
+          browserStatus.textContent = '✓ sito pubblicato';
+          browserStatus.classList.add('live');
+        } else {
+          browserUrl.textContent = 'non pubblicato';
+          browserStatus.textContent = '— attiva il toggle per vedere il deploy —';
+          browserStatus.classList.remove('live');
+        }
+      }
+      toggleEl.addEventListener('click', () => setPages(!toggleEl.classList.contains('on')));
+
+      /* ---------- Terminal simulator ---------- */
+      const term = document.getElementById('term');
+      const cmds = {
+        pull: { p: '~/mio-portfolio', c: 'git pull', out: 'Already up to date.' },
+        add: { p: '~/mio-portfolio', c: 'git add .', out: 'modifiche pronte per il commit' },
+        commit: { p: '~/mio-portfolio', c: 'git commit -m "aggiorna pagina esercizi"', out: '[main a1b2c3d] aggiorna pagina esercizi' },
+        push: { p: '~/mio-portfolio', c: 'git push', out: '→ caricato su GitHub ✓' }
+      };
+      document.querySelectorAll('[data-cmd]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const d = cmds[btn.dataset.cmd];
+          const line1 = document.createElement('div');
+          line1.className = 'term-line t';
+          line1.innerHTML = '<span class="prompt">' + d.p + ' $</span> ' + d.c;
+          term.appendChild(line1);
+          const line2 = document.createElement('div');
+          line2.className = 'term-line s';
+          line2.style.animationDelay = '.15s';
+          line2.textContent = d.out;
+          term.appendChild(line2);
+          term.scrollTop = term.scrollHeight;
+        });
+      });
+      document.getElementById('resetTerm').addEventListener('click', () => { term.innerHTML = ''; });
+    })();
   </script>
+
 </body>
 
 </html>
