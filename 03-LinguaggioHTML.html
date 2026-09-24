@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Il linguaggio HTML — Unità B2</title>
+  <meta name="description"
+    content="Percorso interattivo su HTML, elementi, DOM, testo, immagini, link, liste e tabelle">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ---------- STILI COMPONENTI SPECIFICI ---------- */
+    .anat-bar {
+      margin-top: 24px;
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      background: #fff;
+      border: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: clamp(13px, 2.2vw, 18px);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+
+    .anat-bar .seg {
+      padding: 3px 4px;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .anat-bar .seg:hover,
+    .anat-bar .seg.active {
+      border-color: var(--tag);
+      background: var(--tag-soft);
+    }
+
+    .anat-bar .tg {
+      color: var(--tag);
+    }
+
+    .anat-bar .at {
+      color: var(--blue);
+    }
+
+    .anat-bar .vl {
+      color: var(--brick);
+    }
+
+    .anat-bar .ct {
+      color: var(--ink-soft);
+    }
+
+    .anat-bar .pl {
+      color: var(--ink-soft);
+    }
+
+    .anat-cap {
+      margin-top: 16px;
+      min-height: 60px;
+      padding: 16px 20px;
+      background: #fff;
+      border-left: 4px solid var(--tag);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .anat-cap .name {
+      font-family: var(--mono);
+      font-size: 13.5px;
+      color: var(--tag);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .anat-cap .expl {
+      font-size: 15px;
+      color: var(--ink-soft);
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 820px) {
+      .grid2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .controls-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .code-block {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.75;
+      overflow-x: auto;
+      white-space: pre;
+      color: var(--ink);
+    }
+
+    .code-block .tg {
+      color: var(--tag);
+      font-weight: 600;
+    }
+
+    .code-block .at {
+      color: var(--blue);
+    }
+
+    .code-block .vl {
+      color: var(--brick);
+    }
+
+    .code-block .cm {
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    .code-block .part {
+      transition: background .25s;
+      border-radius: 4px;
+    }
+
+    .code-block .part.hl {
+      background: var(--amber-soft);
+    }
+
+    .browser {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .browser .bar {
+      background: var(--paper-2);
+      padding: 8px 12px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .browser .dotb {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--line);
+    }
+
+    .browser .addr {
+      margin-left: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+
+    .browser .stage {
+      padding: 24px;
+      min-height: 120px;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 16px;
+    }
+
+    /* ---------- ALBERO DOM ---------- */
+    .tree-wrap {
+      margin-top: 24px;
+      overflow-x: auto;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .tree-wrap svg {
+      width: 100%;
+      min-width: 640px;
+      height: auto;
+    }
+
+    .tn-doc {
+      fill: var(--brick);
+    }
+
+    .tn-root {
+      fill: var(--tag);
+    }
+
+    .tn-elem {
+      fill: var(--blue);
+    }
+
+    .tn-attr {
+      fill: var(--paper-2);
+      stroke: var(--line);
+      stroke-width: 1.5;
+      stroke-dasharray: 3 2;
+    }
+
+    .tn-text {
+      fill: var(--paper-2);
+      stroke: var(--line);
+      stroke-width: 1.5;
+    }
+
+    .tn-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      fill: #fff;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      font-weight: 600;
+    }
+
+    .tn-label.dark {
+      fill: var(--ink);
+    }
+
+    .tn-line {
+      stroke: var(--line);
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    .tn-line.dashed {
+      stroke-dasharray: 3 3;
+    }
+
+    .tree-legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+
+    .tree-legend .it {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tree-legend .sw {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex: none;
+    }
+
+    /* ---------- GALLERIA TAG (FLIP CARDS) ---------- */
+    .tag-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .tag-card {
+      height: 200px;
+      cursor: pointer;
+      perspective: 1000px;
+    }
+
+    .tag-card .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform .5s;
+      transform-style: preserve-3d;
+    }
+
+    .tag-card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .tag-card .face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: var(--radius);
+      padding: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: auto;
+      transition: border-color .2s;
+    }
+
+    .tag-card.seen .face.front,
+    .tag-card.flipped .face.front {
+      border-color: var(--tag);
+    }
+
+    .tag-card .face.back {
+      transform: rotateY(180deg);
+      background: var(--paper-2);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      white-space: pre-wrap;
+    }
+
+    .tag-card .tg-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--tag);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .tag-card .tg-render {
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .tag-card blockquote {
+      margin: 0;
+      padding-left: 12px;
+      border-left: 3px solid var(--tag);
+      font-style: italic;
+    }
+
+    .tag-card pre {
+      margin: 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--paper-2);
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    /* ---------- GLOSSARIO ---------- */
+    .glossary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .chip {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 14px;
+      cursor: pointer;
+      background: #fff;
+      transition: border-color .15s, background .15s;
+    }
+
+    .chip:hover {
+      border-color: var(--tag);
+    }
+
+    .chip.open {
+      border-color: var(--tag);
+      background: var(--tag-soft);
+      color: var(--tag);
+      font-weight: 600;
+    }
+
+    .glossary-def {
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      font-size: 14.5px;
+      color: var(--ink-soft);
+      display: none;
+    }
+
+    .glossary-def.show {
+      display: block;
+    }
+
+    .glossary-def b {
+      color: var(--ink);
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main" class="skip-link">Vai al contenuto</a>
+
+  <!-- TOPBAR -->
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="#hero"><span class="brk">B2.2</span> · HTML</a>
+      <nav class="pillnav" id="pillnav" aria-label="Sezioni">
+        <a href="#hero">Inizio</a>
+        <a href="#elemento-html">Sintassi</a>
+        <a href="#hello-world">Hello, World!</a>
+        <a href="#dom">DOM</a>
+        <a href="#testo">Testo</a>
+        <a href="#citazioni-codice">Citazioni e codice</a>
+        <a href="#immagini-link">Immagini e link</a>
+        <a href="#liste-tabelle">Liste e tabelle</a>
+        <a href="#finale">Riepilogo</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <h1>Dentro a una <span class="accent">pagina HTML</span></h1>
+
+      <div class="meta">
+        <span>Unità B2 · Linguaggi HTML e CSS</span>
+        <span>pp. 166-174</span>
+      </div>
+    </section>
+
+    <!-- 01. IL LINGUAGGIO HTML -->
+    <section id="elemento-html">
+      <div class="section-head">
+        <div class="kicker">01 · sintassi</div>
+        <h2>Il linguaggio HTML</h2>
+        <p class="lead">La struttura generale di un elemento <span class="meta-pill">p. 166</span></p>
+      </div>
+
+      <p class="lead">
+        <b>HTML5</b> è la versione di riferimento del linguaggio. Ogni elemento HTML segue sempre la stessa anatomia:
+        tocca le parti sottostanti per analizzarle.
+      </p>
+
+      <div class="anat-bar" id="anatomyElem">
+        <span class="seg" data-name="Tag di apertura"
+          data-expl="Apre l'elemento. Contiene il nome del tag racchiuso tra parentesi angolari."><span
+            class="tg">&lt;nome</span></span>
+        <span class="pl">&nbsp;</span>
+        <span class="seg" data-name="Nome dell'attributo"
+          data-expl="Aggiunge un'informazione extra all'elemento, come la lingua o la destinazione di un link."><span
+            class="at">attributo</span></span>
+        <span class="pl">=</span>
+        <span class="seg" data-name="Valore dell'attributo"
+          data-expl="Il valore assegnato all'attributo, racchiuso tra virgolette."><span
+            class="vl">"valore"</span></span>
+        <span class="pl">&gt;</span>
+        <span class="seg" data-name="Contenuto"
+          data-expl="Il testo o gli altri elementi annidati racchiusi tra tag di apertura e chiusura."><span
+            class="ct">Contenuto</span></span>
+        <span class="seg" data-name="Tag di chiusura"
+          data-expl="Chiude l'elemento. Ha lo stesso nome del tag di apertura preceduto da /."><span
+            class="tg">&lt;/nome&gt;</span></span>
+      </div>
+
+      <div class="anat-cap" id="anatomyElemCaption">
+        <div class="name">Tocca una parte qui sopra</div>
+        <div class="expl">Ogni elemento HTML strutturato è composto da queste parti fondamentali.</div>
+      </div>
+    </section>
+
+    <!-- 02. HELLO WORLD -->
+    <section id="hello-world">
+      <div class="section-head">
+        <div class="kicker">02 · struttura</div>
+        <h2>Hello, World!</h2>
+        <p class="lead">La struttura minima di ogni pagina <span class="meta-pill">pp. 166-167</span></p>
+      </div>
+
+      <p class="lead" style="margin-bottom:20px;">
+        Il tag radice <b>&lt;html&gt;</b> contiene sempre l'<b>intestazione</b> (<span class="mono">&lt;head&gt;</span>)
+        e il <b>corpo</b> (<span class="mono">&lt;body&gt;</span>).
+      </p>
+
+      <div class="controls-row">
+        <button class="btn primary" id="btnHlHead">Evidenzia &lt;head&gt;</button>
+        <button class="btn primary" id="btnHlBody">Evidenzia &lt;body&gt;</button>
+        <button class="btn ghost" id="btnHlNone">Ripristina</button>
+      </div>
+
+      <div class="grid2">
+        <pre class="code-block" id="hwCode"><span class="cm">&lt;!DOCTYPE html&gt;</span>
+<span class="part part-head"><span class="tg">&lt;html</span> <span class="at">lang</span>=<span class="vl">"it"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;head&gt;</span>
+    <span class="tg">&lt;meta</span> <span class="at">charset</span>=<span class="vl">"utf-8"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;title&gt;</span>hello World Wide Web!<span class="tg">&lt;/title&gt;</span>
+  <span class="tg">&lt;/head&gt;</span></span>
+<span class="part part-body">  <span class="tg">&lt;body&gt;</span>
+    <span class="cm">&lt;!-- Contenuto della pagina --&gt;</span>
+    <span class="tg">&lt;p&gt;</span>Hello, World!<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;/body&gt;</span></span>
+<span class="tg">&lt;/html&gt;</span></pre>
+
+        <div class="browser">
+          <div class="bar">
+            <span class="dotb"></span><span class="dotb"></span><span class="dotb"></span>
+            <span class="addr">hello World Wide Web!</span>
+          </div>
+          <div class="stage">Hello, World!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03. IL DOM -->
+    <section id="dom">
+      <div class="section-head">
+        <div class="kicker">03 · albero</div>
+        <h2>Il DOM: la pagina come albero</h2>
+        <p class="lead">Document Object Model <span class="meta-pill">pp. 167-168</span></p>
+      </div>
+
+      <p class="lead">
+        Gli elementi HTML sono annidati uno nell'altro costituendo una struttura ad albero chiamata <b>DOM</b>.
+      </p>
+
+      <div class="tree-wrap">
+        <svg viewBox="0 0 820 340">
+          <line class="tn-line" x1="410" y1="45" x2="410" y2="80"></line>
+          <line class="tn-line dashed" x1="380" y1="95" x2="265" y2="55"></line>
+          <line class="tn-line" x1="395" y1="110" x2="300" y2="150"></line>
+          <line class="tn-line" x1="425" y1="110" x2="540" y2="150"></line>
+          <line class="tn-line" x1="265" y1="180" x2="180" y2="220"></line>
+          <line class="tn-line" x1="295" y1="180" x2="345" y2="220"></line>
+          <line class="tn-line dashed" x1="160" y1="235" x2="90" y2="285"></line>
+          <line class="tn-line" x1="540" y1="180" x2="540" y2="220"></line>
+          <line class="tn-line" x1="345" y1="250" x2="345" y2="285"></line>
+          <line class="tn-line" x1="540" y1="250" x2="540" y2="285"></line>
+
+          <rect class="tn-doc" x="375" y="15" width="70" height="30" rx="4"></rect>
+          <text class="tn-label" x="410" y="31">Document</text>
+
+          <rect class="tn-attr" x="200" y="40" width="65" height="26" rx="4"></rect>
+          <text class="tn-label dark" x="232.5" y="54">lang</text>
+
+          <rect class="tn-root" x="375" y="80" width="70" height="30" rx="4"></rect>
+          <text class="tn-label" x="410" y="96">html</text>
+
+          <rect class="tn-elem" x="245" y="150" width="70" height="30" rx="4"></rect>
+          <text class="tn-label" x="280" y="166">head</text>
+
+          <rect class="tn-elem" x="505" y="150" width="70" height="30" rx="4"></rect>
+          <text class="tn-label" x="540" y="166">body</text>
+
+          <rect class="tn-attr" x="55" y="272" width="70" height="26" rx="4"></rect>
+          <text class="tn-label dark" x="90" y="286">charset</text>
+
+          <rect class="tn-elem" x="115" y="220" width="70" height="30" rx="4"></rect>
+          <text class="tn-label" x="150" y="236">meta</text>
+
+          <rect class="tn-elem" x="310" y="220" width="70" height="30" rx="4"></rect>
+          <text class="tn-label" x="345" y="236">title</text>
+
+          <rect class="tn-elem" x="505" y="220" width="70" height="30" rx="4"></rect>
+          <text class="tn-label" x="540" y="236">p</text>
+
+          <rect class="tn-text" x="270" y="285" width="150" height="32" rx="4"></rect>
+          <text class="tn-label dark" x="345" y="302">Titolo della pagina</text>
+
+          <rect class="tn-text" x="475" y="285" width="130" height="32" rx="4"></rect>
+          <text class="tn-label dark" x="540" y="302">Hello, World!</text>
+        </svg>
+      </div>
+
+      <div class="tree-legend">
+        <div class="it"><span class="sw" style="background:var(--brick)"></span>Document</div>
+        <div class="it"><span class="sw" style="background:var(--tag)"></span>Root element</div>
+        <div class="it"><span class="sw" style="background:var(--blue)"></span>Element</div>
+        <div class="it"><span class="sw"
+            style="background:var(--paper-2); border:1px dashed var(--line)"></span>Attribute</div>
+        <div class="it"><span class="sw" style="background:var(--paper-2); border:1px solid var(--line)"></span>Text
+        </div>
+      </div>
+    </section>
+
+    <!-- 04. STRUTTURAZIONE DEL TESTO -->
+    <section id="testo">
+      <div class="section-head">
+        <div class="kicker">04 · testo</div>
+        <h2>Strutturazione del testo</h2>
+        <p class="lead">Titoli, paragrafi ed enfasi <span class="meta-pill">p. 169</span></p>
+      </div>
+
+      <p class="lead" style="margin-bottom:20px;">
+        HTML offre tag specifici per organizzare la gerarchia testuale:
+      </p>
+
+      <div class="panel" style="margin-bottom:24px;">
+        <p style="font-size:17px; line-height:1.7; margin:0 0 16px;">
+          Le tecnologie web permettono di <span id="txtStrong">enfatizzare</span> alcune parole o di renderle <span
+            id="txtEm">espressive</span>.
+        </p>
+        <div class="controls-row">
+          <button class="btn primary" id="btnStrong">&lt;strong&gt;</button>
+          <button class="btn primary" id="btnEm">&lt;em&gt;</button>
+        </div>
+        <pre class="code-block" id="txtCode"
+          style="margin-top:14px;"><span class="tg">&lt;p&gt;</span>Le tecnologie web permettono di enfatizzare alcune parole o di renderle espressive.<span class="tg">&lt;/p&gt;</span></pre>
+      </div>
+
+      <div class="grid2">
+        <pre
+          class="code-block"><span class="tg">&lt;h1&gt;</span>La Divina Commedia<span class="tg">&lt;/h1&gt;</span>
+<span class="tg">&lt;h2&gt;</span>Inferno — Canto I<span class="tg">&lt;/h2&gt;</span>
+<span class="tg">&lt;p&gt;</span>
+  Nel mezzo del cammin di nostra vita<span class="tg">&lt;br&gt;</span>
+  mi ritrovai per una selva oscura,<span class="tg">&lt;br&gt;</span>
+  ché la diritta via era smarrita.
+<span class="tg">&lt;/p&gt;</span>
+<span class="tg">&lt;p&gt;</span><span class="tg">&lt;strong&gt;</span>Autore: <span class="tg">&lt;/strong&gt;</span>Dante Alighieri<span class="tg">&lt;/p&gt;</span></pre>
+
+        <div class="browser">
+          <div class="bar">
+            <span class="dotb"></span><span class="dotb"></span><span class="dotb"></span>
+            <span class="addr">divina_commedia.html</span>
+          </div>
+          <div class="stage">
+            <h1 style="font-size:24px; margin:0 0 6px;">La Divina Commedia</h1>
+            <h2 style="font-size:18px; margin:0 0 12px; color:var(--ink-soft);">Inferno — Canto I</h2>
+            <p style="margin:0 0 12px; font-size:15px;">Nel mezzo del cammin di nostra vita<br>mi ritrovai per una selva
+              oscura,<br>ché la diritta via era smarrita.</p>
+            <p style="margin:0; font-size:14px;"><strong>Autore: </strong>Dante Alighieri</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05. CITAZIONI E CODICE -->
+    <section id="citazioni-codice">
+      <div class="section-head">
+        <div class="kicker">05 · contenuto</div>
+        <h2>Citazioni, abbreviazioni e codice</h2>
+        <p class="lead">Tag per contenuti speciali <span class="meta-pill">pp. 170-171</span></p>
+      </div>
+
+      <p class="lead" style="margin-bottom:16px;">Tocca una card per scoprire il codice HTML corrispondente:</p>
+
+      <div class="tag-gallery">
+        <div class="tag-card">
+          <div class="card-inner">
+            <div class="face front">
+              <div class="tg-name">&lt;blockquote&gt; + &lt;cite&gt;</div>
+              <div class="tg-render">
+                <blockquote>Talk is cheap. Show me the code.<br><cite>— Linus Torvalds</cite></blockquote>
+              </div>
+            </div>
+            <div class="face back"><span class="tg">&lt;blockquote&gt;</span>
+              Talk is cheap. Show me the code.
+              <span class="tg">&lt;cite&gt;</span>— Linus Torvalds<span class="tg">&lt;/cite&gt;</span>
+              <span class="tg">&lt;/blockquote&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tag-card">
+          <div class="card-inner">
+            <div class="face front">
+              <div class="tg-name">&lt;mark&gt;</div>
+              <div class="tg-render">Il Web connette <mark
+                  style="background:var(--amber-soft); padding:1px 3px;">persone</mark> oltre che computer.</div>
+            </div>
+            <div class="face back">Il Web connette
+              <span class="tg">&lt;mark&gt;</span>persone<span class="tg">&lt;/mark&gt;</span>
+              oltre che computer.
+            </div>
+          </div>
+        </div>
+
+        <div class="tag-card">
+          <div class="card-inner">
+            <div class="face front">
+              <div class="tg-name">&lt;abbr&gt;</div>
+              <div class="tg-render">Il <abbr title="World Wide Web Consortium"
+                  style="text-decoration:underline dotted; cursor:help;">W3C</abbr> definisce gli standard web.</div>
+            </div>
+            <div class="face back">Il
+              <span class="tg">&lt;abbr title="World Wide Web
+                Consortium"&gt;</span>W3C<span class="tg">&lt;/abbr&gt;</span>
+              definisce gli standard.
+            </div>
+          </div>
+        </div>
+
+        <div class="tag-card">
+          <div class="card-inner">
+            <div class="face front">
+              <div class="tg-name">&lt;del&gt; e &lt;ins&gt;</div>
+              <div class="tg-render">L'indentazione è di <del>due</del> <ins>quattro</ins> spazi.</div>
+            </div>
+            <div class="face back">L'indentazione è di
+              <span class="tg">&lt;del&gt;</span>due<span class="tg">&lt;/del&gt;</span>
+              <span class="tg">&lt;ins&gt;</span>quattro<span class="tg">&lt;/ins&gt;</span> spazi.
+            </div>
+          </div>
+        </div>
+
+        <div class="tag-card">
+          <div class="card-inner">
+            <div class="face front">
+              <div class="tg-name">&lt;pre&gt;&lt;code&gt;</div>
+              <div class="tg-render">
+                <pre>if is_valid:
+    print("OK")</pre>
+              </div>
+            </div>
+            <div class="face back"><span class="tg">&lt;pre&gt;&lt;code&gt;</span>
+              if is_valid:
+              print("OK")
+              <span class="tg">&lt;/code&gt;&lt;/pre&gt;</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tag-card">
+          <div class="card-inner">
+            <div class="face front">
+              <div class="tg-name">&lt;address&gt;</div>
+              <div class="tg-render">
+                <address>Piazza Roma 1<br>00100 Roma RM</address>
+              </div>
+            </div>
+            <div class="face back"><span class="tg">&lt;address&gt;</span>
+              Piazza Roma 1<span class="tg">&lt;br&gt;</span>00100 Roma RM
+              <span class="tg">&lt;/address&gt;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06. IMMAGINI E LINK -->
+    <section id="immagini-link">
+      <div class="section-head">
+        <div class="kicker">06 · collegamenti</div>
+        <h2>Immagini e link</h2>
+        <p class="lead">I tag &lt;img&gt; e &lt;a&gt; <span class="meta-pill">p. 172</span></p>
+      </div>
+
+      <p class="lead" style="margin-bottom:12px;"><b>1. Il tag &lt;img&gt;</b> (elemento vuoto)</p>
+      <div class="anat-bar" id="anatomyImg">
+        <span class="seg" data-name="Tag" data-expl="Tag vuoto senza chiusura."><span class="tg">&lt;img</span></span>
+        <span class="pl">&nbsp;</span>
+        <span class="seg" data-name="src" data-expl="Percorso della sorgente immagine."><span
+            class="at">src</span>=<span class="vl">"logo.png"</span></span>
+        <span class="pl">&nbsp;</span>
+        <span class="seg" data-name="alt" data-expl="Testo alternativo per l'accessibilità."><span
+            class="at">alt</span>=<span class="vl">"Logo W3C"</span></span>
+        <span class="pl">&gt;</span>
+      </div>
+      <div class="anat-cap" id="anatomyImgCaption">
+        <div class="name">Tocca una parte qui sopra</div>
+        <div class="expl">&lt;img&gt; non racchiude testo ed è un elemento autocontenuto.</div>
+      </div>
+
+      <p class="lead" style="margin-top:28px; margin-bottom:12px;"><b>2. Il tag &lt;a&gt;</b> (collegamento
+        ipertestuale)</p>
+      <div class="anat-bar" id="anatomyLink">
+        <span class="seg" data-name="Tag + href" data-expl="href specifica l'URL di destinazione."><span
+            class="tg">&lt;a</span> <span class="at">href</span>=<span class="vl">"https://w3.org"</span></span>
+        <span class="pl">&gt;</span>
+        <span class="seg" data-name="Contenuto" data-expl="Testo o elemento cliccabile."><span
+            class="ct">W3C</span></span>
+        <span class="seg" data-name="Chiusura" data-expl="Chiude il link."><span class="tg">&lt;/a&gt;</span></span>
+      </div>
+      <div class="anat-cap" id="anatomyLinkCaption">
+        <div class="name">Tocca una parte qui sopra</div>
+        <div class="expl">L'attributo href determina dove viene reindirizzato l'utente.</div>
+      </div>
+    </section>
+
+    <!-- 07. LISTE E TABELLE -->
+    <section id="liste-tabelle">
+      <div class="section-head">
+        <div class="kicker">07 · organizzazione</div>
+        <h2>Liste e tabelle</h2>
+        <p class="lead">Tre tipi di lista e la struttura di una tabella <span class="meta-pill">pp. 172-174</span></p>
+      </div>
+
+      <div class="controls-row" id="ltTabs">
+        <button class="btn primary" data-tab="ul">&lt;ul&gt; puntata</button>
+        <button class="btn ghost" data-tab="ol">&lt;ol&gt; numerata</button>
+        <button class="btn ghost" data-tab="dl">&lt;dl&gt; definizioni</button>
+        <button class="btn ghost" data-tab="table">&lt;table&gt; tabella</button>
+      </div>
+
+      <div class="grid2">
+        <pre class="code-block" id="ltCode">&lt;ul&gt;
+  &lt;li&gt;Latte&lt;/li&gt;
+  &lt;li&gt;Burro&lt;/li&gt;
+  &lt;li&gt;Uova&lt;/li&gt;
+&lt;/ul&gt;</pre>
+        <div class="browser">
+          <div class="bar">
+            <span class="dotb"></span><span class="dotb"></span><span class="dotb"></span>
+            <span class="addr">anteprima</span>
+          </div>
+          <div class="stage" id="ltPreview">
+            <ul style="margin:0; padding-left:20px;">
+              <li>Latte</li>
+              <li>Burro</li>
+              <li>Uova</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08. RIEPILOGO -->
+    <section id="finale">
+      <div class="section-head">
+        <div class="kicker">08 · riepilogo</div>
+        <h2>I concetti chiave di HTML</h2>
+      </div>
+
+      <div class="glossary" id="glossary">
+        <button class="chip"
+          data-def="HyperText Markup Language: il linguaggio standard per strutturare pagine web.">HTML</button>
+        <button class="chip"
+          data-def="L'unità base di HTML composta da tag di apertura, contenuto e tag di chiusura.">Elemento</button>
+        <button class="chip open"
+          data-def="Document Object Model: la rappresentazione ad albero degli elementi della pagina.">DOM</button>
+        <button class="chip"
+          data-def="Informazione aggiuntiva inserita nel tag di apertura (es. href, src, alt).">Attributo</button>
+        <button class="chip"
+          data-def="Tag privi di contenuto e tag di chiusura (es. &lt;img&gt;, &lt;meta&gt;, &lt;br&gt;).">Tag
+          vuoti</button>
+        <button class="chip"
+          data-def="La pratica di inserire elementi all'interno di altri elementi mantenendo la gerarchia.">Annidamento</button>
+      </div>
+
+      <div class="glossary-def show" id="glossaryDef">
+        <b>DOM.</b> Document Object Model: la rappresentazione ad albero degli elementi della pagina.
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Materiale didattico basato su "Hashtag 2", Modulo B, Linguaggi per il web · Realizzato con l'assistenza di Claude
+    (Anthropic)
+  </footer>
+
+  <script src="site.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ---------- BARRE DI SINTASSI (ANATOMY) ---------- */
+      function setupAnatomy(barId, capId) {
+        var bar = document.getElementById(barId);
+        var cap = document.getElementById(capId);
+        if (!bar || !cap) return;
+        var name = cap.querySelector('.name');
+        var expl = cap.querySelector('.expl');
+        var segs = Array.prototype.slice.call(bar.querySelectorAll('.seg'));
+
+        segs.forEach(function (seg) {
+          function activate() {
+            segs.forEach(function (s) { s.classList.remove('active'); });
+            seg.classList.add('active');
+            name.textContent = seg.getAttribute('data-name');
+            expl.textContent = seg.getAttribute('data-expl');
+          }
+          seg.addEventListener('mouseenter', activate);
+          seg.addEventListener('click', activate);
+        });
+      }
+
+      setupAnatomy('anatomyElem', 'anatomyElemCaption');
+      setupAnatomy('anatomyImg', 'anatomyImgCaption');
+      setupAnatomy('anatomyLink', 'anatomyLinkCaption');
+
+      /* ---------- HELLO WORLD EVIDENZIAZIONE ---------- */
+      var btnHead = document.getElementById('btnHlHead');
+      var btnBody = document.getElementById('btnHlBody');
+      var btnNone = document.getElementById('btnHlNone');
+      var heads = Array.prototype.slice.call(document.querySelectorAll('.part-head'));
+      var bodies = Array.prototype.slice.call(document.querySelectorAll('.part-body'));
+
+      function clearHl() {
+        heads.forEach(function (e) { e.classList.remove('hl'); });
+        bodies.forEach(function (e) { e.classList.remove('hl'); });
+      }
+
+      if (btnHead && btnBody && btnNone) {
+        btnHead.addEventListener('click', function () { clearHl(); heads.forEach(function (e) { e.classList.add('hl'); }); });
+        btnBody.addEventListener('click', function () { clearHl(); bodies.forEach(function (e) { e.classList.add('hl'); }); });
+        btnNone.addEventListener('click', clearHl);
+      }
+
+      /* ---------- DEMO TESTO STRONG/EM ---------- */
+      var txtStrong = document.getElementById('txtStrong');
+      var txtEm = document.getElementById('txtEm');
+      var txtCode = document.getElementById('txtCode');
+      var btnStrong = document.getElementById('btnStrong');
+      var btnEm = document.getElementById('btnEm');
+      var sOn = false, eOn = false;
+
+      function updateTxt() {
+        if (txtStrong) txtStrong.style.fontWeight = sOn ? '700' : '400';
+        if (txtEm) txtEm.style.fontStyle = eOn ? 'italic' : 'normal';
+        var sPart = sOn ? '<span class="tg">&lt;strong&gt;</span>enfatizzare<span class="tg">&lt;/strong&gt;</span>' : 'enfatizzare';
+        var ePart = eOn ? '<span class="tg">&lt;em&gt;</span>espressive<span class="tg">&lt;/em&gt;</span>' : 'espressive';
+        if (txtCode) {
+          txtCode.innerHTML = '<span class="tg">&lt;p&gt;</span>Le tecnologie web permettono di ' + sPart + ' alcune parole o di renderle ' + ePart + '.<span class="tg">&lt;/p&gt;</span>';
+        }
+      }
+
+      if (btnStrong && btnEm) {
+        btnStrong.addEventListener('click', function () { sOn = !sOn; updateTxt(); });
+        btnEm.addEventListener('click', function () { eOn = !eOn; updateTxt(); });
+      }
+
+      /* ---------- GALLERIA CARD FLIP ---------- */
+      var tagCards = Array.prototype.slice.call(document.querySelectorAll('.tag-card'));
+      tagCards.forEach(function (card) {
+        card.addEventListener('click', function () {
+          card.classList.toggle('flipped');
+          card.classList.add('seen');
+        });
+      });
+
+      /* ---------- TAB LISTE E TABELLE ---------- */
+      var ltData = {
+        ul: {
+          code: '<ul>\n  <li>Latte</li>\n  <li>Burro</li>\n  <li>Uova</li>\n</ul>',
+          html: '<ul style="margin:0; padding-left:20px;"><li>Latte</li><li>Burro</li><li>Uova</li></ul>'
+        },
+        ol: {
+          code: '<ol>\n  <li>Mercurio</li>\n  <li>Venere</li>\n  <li>Terra</li>\n</ol>',
+          html: '<ol style="margin:0; padding-left:20px;"><li>Mercurio</li><li>Venere</li><li>Terra</li></ol>'
+        },
+        dl: {
+          code: '<dl>\n  <dt>HTML</dt>\n  <dd>Linguaggio di marcatura</dd>\n  <dt>CSS</dt>\n  <dd>Linguaggio di stile</dd>\n</dl>',
+          html: '<dl style="margin:0;"><dt style="font-weight:700">HTML</dt><dd style="margin:0 0 8px;">Linguaggio di marcatura</dd><dt style="font-weight:700">CSS</dt><dd style="margin:0;">Linguaggio di stile</dd></dl>'
+        },
+        table: {
+          code: '<table border="1">\n  <tr><th>Nome</th><th>Valore</th></tr>\n  <tr><td>Terra</td><td>3</td></tr>\n</table>',
+          html: '<table style="border-collapse:collapse; font-size:14px; width:100%;"><tr><th style="border:1px solid var(--line); padding:6px 10px; text-align:left;">Nome</th><th style="border:1px solid var(--line); padding:6px 10px; text-align:left;">Valore</th></tr><tr><td style="border:1px solid var(--line); padding:6px 10px;">Terra</td><td style="border:1px solid var(--line); padding:6px 10px;">3</td></tr></table>'
+        }
+      };
+
+      var ltTabs = Array.prototype.slice.call(document.querySelectorAll('#ltTabs button'));
+      var ltCode = document.getElementById('ltCode');
+      var ltPreview = document.getElementById('ltPreview');
+
+      ltTabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var key = btn.getAttribute('data-tab');
+          ltTabs.forEach(function (b) {
+            b.className = (b === btn) ? 'btn primary' : 'btn ghost';
+          });
+          if (ltData[key]) {
+            ltCode.textContent = ltData[key].code;
+            ltPreview.innerHTML = ltData[key].html;
+          }
+        });
+      });
+
+      /* ---------- GLOSSARIO CHIPS ---------- */
+      var chips = Array.prototype.slice.call(document.querySelectorAll('#glossary .chip'));
+      var glossaryDef = document.getElementById('glossaryDef');
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          var already = chip.classList.contains('open');
+          chips.forEach(function (c) { c.classList.remove('open'); });
+          if (already) {
+            glossaryDef.classList.remove('show');
+          } else {
+            chip.classList.add('open');
+            glossaryDef.innerHTML = '<b>' + chip.textContent + '.</b> ' + chip.getAttribute('data-def');
+            glossaryDef.classList.add('show');
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+
+</html>
