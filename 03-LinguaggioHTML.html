@@ -447,12 +447,10 @@
       <div class="section-head">
         <div class="kicker">01 · sintassi</div>
         <h2>Il linguaggio HTML</h2>
-        <p class="lead">La struttura generale di un elemento <span class="meta-pill">p. 166</span></p>
       </div>
 
       <p class="lead">
-        <b>HTML5</b> è la versione di riferimento del linguaggio. Ogni elemento HTML segue sempre la stessa anatomia:
-        tocca le parti sottostanti per analizzarle.
+        <b>HTML5</b> è la versione di riferimento del linguaggio. Ogni elemento HTML segue sempre la stessa sintassi:
       </p>
 
       <div class="anat-bar" id="anatomyElem">
@@ -487,13 +485,7 @@
       <div class="section-head">
         <div class="kicker">02 · struttura</div>
         <h2>Hello, World!</h2>
-        <p class="lead">La struttura minima di ogni pagina <span class="meta-pill">pp. 166-167</span></p>
       </div>
-
-      <p class="lead" style="margin-bottom:20px;">
-        Il tag radice <b>&lt;html&gt;</b> contiene sempre l'<b>intestazione</b> (<span class="mono">&lt;head&gt;</span>)
-        e il <b>corpo</b> (<span class="mono">&lt;body&gt;</span>).
-      </p>
 
       <div class="controls-row">
         <button class="btn primary" id="btnHlHead">Evidenzia &lt;head&gt;</button>
@@ -529,7 +521,7 @@
       <div class="section-head">
         <div class="kicker">03 · albero</div>
         <h2>Il DOM: la pagina come albero</h2>
-        <p class="lead">Document Object Model <span class="meta-pill">pp. 167-168</span></p>
+        <p class="lead">DOM = Document Object Model </p>
       </div>
 
       <p class="lead">
@@ -600,7 +592,6 @@
       <div class="section-head">
         <div class="kicker">04 · testo</div>
         <h2>Strutturazione del testo</h2>
-        <p class="lead">Titoli, paragrafi ed enfasi <span class="meta-pill">p. 169</span></p>
       </div>
 
       <p class="lead" style="margin-bottom:20px;">
@@ -652,10 +643,8 @@
       <div class="section-head">
         <div class="kicker">05 · contenuto</div>
         <h2>Citazioni, abbreviazioni e codice</h2>
-        <p class="lead">Tag per contenuti speciali <span class="meta-pill">pp. 170-171</span></p>
       </div>
 
-      <p class="lead" style="margin-bottom:16px;">Tocca una card per scoprire il codice HTML corrispondente:</p>
 
       <div class="tag-gallery">
         <div class="tag-card">
@@ -755,12 +744,12 @@
       <div class="section-head">
         <div class="kicker">06 · collegamenti</div>
         <h2>Immagini e link</h2>
-        <p class="lead">I tag &lt;img&gt; e &lt;a&gt; <span class="meta-pill">p. 172</span></p>
       </div>
 
-      <p class="lead" style="margin-bottom:12px;"><b>1. Il tag &lt;img&gt;</b> (elemento vuoto)</p>
+      <p class="lead" style="margin-bottom:12px;"><b> Il tag &lt;img&gt;</b> serve per inserire delle immagini nel
+        documento</p>
       <div class="anat-bar" id="anatomyImg">
-        <span class="seg" data-name="Tag" data-expl="Tag vuoto senza chiusura."><span class="tg">&lt;img</span></span>
+        <span class="seg" data-name="Tag" data-expl="Tag senza chiusura."><span class="tg">&lt;img</span></span>
         <span class="pl">&nbsp;</span>
         <span class="seg" data-name="src" data-expl="Percorso della sorgente immagine."><span
             class="at">src</span>=<span class="vl">"logo.png"</span></span>
@@ -774,8 +763,8 @@
         <div class="expl">&lt;img&gt; non racchiude testo ed è un elemento autocontenuto.</div>
       </div>
 
-      <p class="lead" style="margin-top:28px; margin-bottom:12px;"><b>2. Il tag &lt;a&gt;</b> (collegamento
-        ipertestuale)</p>
+      <p class="lead" style="margin-top:28px; margin-bottom:12px;"><b>Il tag &lt;a&gt;</b> serve per creare collegamenti
+        ipertestuali (link)</p>
       <div class="anat-bar" id="anatomyLink">
         <span class="seg" data-name="Tag + href" data-expl="href specifica l'URL di destinazione."><span
             class="tg">&lt;a</span> <span class="at">href</span>=<span class="vl">"https://w3.org"</span></span>
@@ -795,7 +784,7 @@
       <div class="section-head">
         <div class="kicker">07 · organizzazione</div>
         <h2>Liste e tabelle</h2>
-        <p class="lead">Tre tipi di lista e la struttura di una tabella <span class="meta-pill">pp. 172-174</span></p>
+
       </div>
 
       <div class="controls-row" id="ltTabs">
@@ -843,8 +832,7 @@
           data-def="Document Object Model: la rappresentazione ad albero degli elementi della pagina.">DOM</button>
         <button class="chip"
           data-def="Informazione aggiuntiva inserita nel tag di apertura (es. href, src, alt).">Attributo</button>
-        <button class="chip"
-          data-def="Tag privi di contenuto e tag di chiusura (es. &lt;img&gt;, &lt;meta&gt;, &lt;br&gt;).">Tag
+        <button class="chip" data-def="Tag privi di contenuto e tag di chiusura (es. img, meta, br).">Tag
           vuoti</button>
         <button class="chip"
           data-def="La pratica di inserire elementi all'interno di altri elementi mantenendo la gerarchia.">Annidamento</button>
@@ -958,8 +946,8 @@
           html: '<dl style="margin:0;"><dt style="font-weight:700">HTML</dt><dd style="margin:0 0 8px;">Linguaggio di marcatura</dd><dt style="font-weight:700">CSS</dt><dd style="margin:0;">Linguaggio di stile</dd></dl>'
         },
         table: {
-          code: '<table border="1">\n  <tr><th>Nome</th><th>Valore</th></tr>\n  <tr><td>Terra</td><td>3</td></tr>\n</table>',
-          html: '<table style="border-collapse:collapse; font-size:14px; width:100%;"><tr><th style="border:1px solid var(--line); padding:6px 10px; text-align:left;">Nome</th><th style="border:1px solid var(--line); padding:6px 10px; text-align:left;">Valore</th></tr><tr><td style="border:1px solid var(--line); padding:6px 10px;">Terra</td><td style="border:1px solid var(--line); padding:6px 10px;">3</td></tr></table>'
+          code: '<table border="1">\n  <tr><th>Nome</th><th>Valore</th></tr>\n  <tr><td>Terra</td><td>3</td></tr>\n  <tr><td>Venere</td><td>2</td></tr>\n</table>',
+          html: '<table style="border-collapse:collapse; font-size:14px; width:100%;"><tr><th style="border:1px solid var(--line); padding:6px 10px; text-align:left;">Nome</th><th style="border:1px solid var(--line); padding:6px 10px; text-align:left;">Valore</th></tr><tr><td style="border:1px solid var(--line); padding:6px 10px;">Terra</td><td style="border:1px solid var(--line); padding:6px 10px;">3</td></tr><tr><td style="border:1px solid var(--line); padding:6px 10px;">Venere</td><td style="border:1px solid var(--line); padding:6px 10px;">2</td></tr></table>'
         }
       };
 
