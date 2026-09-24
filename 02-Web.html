@@ -1205,8 +1205,8 @@
         la fine degli anni '70 la Rete si estende da costa a costa.</p>
 
       <div class="netmap-legend">
-        <div class="item"><span class="sw" style="background:var(--alert)"></span>i 4 nodi originari (1969)</div>
-        <div class="item"><span class="sw" style="background:var(--ok)"></span>alcuni dei nodi aggiunti negli anni '70
+        <div class="item"><span class="sw" style="background:var(--brick)"></span>i 4 nodi originari (1969)</div>
+        <div class="item"><span class="sw" style="background:var(--blue)"></span>alcuni dei nodi aggiunti negli anni '70
         </div>
       </div>
 
@@ -1220,9 +1220,9 @@
       <div class="elements-list">
         <div class="item"><span class="sw" style="background:var(--ink)"></span>1. Dispositivi elettronici — TV, laptop,
           tablet, smartphone…</div>
-        <div class="item"><span class="sw" style="background:var(--signal)"></span>2. Connessioni fisiche — cavi o WiFi
+        <div class="item"><span class="sw" style="background:var(--tag)"></span>2. Connessioni fisiche — cavi o WiFi
           tra i dispositivi e il router</div>
-        <div class="item"><span class="sw" style="background:var(--ok)"></span>3. Apparecchiature di rete — il router
+        <div class="item"><span class="sw" style="background:var(--blue)"></span>3. Apparecchiature di rete — il router
           che
           smista i dati verso Internet</div>
       </div>
@@ -1275,9 +1275,9 @@
             <rect x="8" y="10" width="44" height="20" rx="2"></rect>
             <line x1="18" y1="10" x2="12" y2="-4"></line>
             <line x1="42" y1="10" x2="48" y2="-4"></line>
-            <circle cx="18" cy="20" r="1.6" fill="var(--ok)"></circle>
-            <circle cx="26" cy="20" r="1.6" fill="var(--ok)"></circle>
-            <circle cx="34" cy="20" r="1.6" fill="var(--ok)"></circle>
+            <circle cx="18" cy="20" r="1.6" fill="var(--blue)"></circle>
+            <circle cx="26" cy="20" r="1.6" fill="var(--blue)"></circle>
+            <circle cx="34" cy="20" r="1.6" fill="var(--blue)"></circle>
           </g>
           <text class="lbl-strong" x="250" y="254" text-anchor="middle">Router</text>
 
@@ -1384,7 +1384,7 @@
           <div class="stage" id="csStage"
             style="min-height:110px; display:flex; align-items:center; justify-content:center; padding:16px 20px;">
             <div style="text-align:center">
-              <svg viewBox="0 0 48 48" style="width:32px;height:32px;color:var(--alert)" fill="none">
+              <svg viewBox="0 0 48 48" style="width:32px;height:32px;color:var(--brick)" fill="none">
                 <circle cx="14" cy="24" r="8" stroke="currentColor" stroke-width="2"></circle>
                 <circle cx="34" cy="24" r="8" stroke="currentColor" stroke-width="2"></circle>
                 <line x1="20" y1="18" x2="28" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -1393,7 +1393,7 @@
                 </line>
               </svg>
               <h4
-                style="margin:4px 0 2px; font-family:var(--mono); font-size:22px; font-weight:700; color:var(--alert)">
+                style="margin:4px 0 2px; font-family:var(--mono); font-size:22px; font-weight:700; color:var(--brick)">
                 404</h4>
               <p style="margin:0; font-size:14px; font-weight:600;">Pagina non trovata</p>
             </div>
@@ -1523,8 +1523,8 @@
             </svg>
             <div class="spider" id="spider">
               <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="4" fill="var(--signal)"></circle>
-                <g stroke="var(--signal)" stroke-width="1.4" stroke-linecap="round">
+                <circle cx="12" cy="12" r="4" fill="var(--tag)"></circle>
+                <g stroke="var(--tag)" stroke-width="1.4" stroke-linecap="round">
                   <path d="M12 8 L4 4"></path>
                   <path d="M12 8 L20 4"></path>
                   <path d="M12 12 L2 12"></path>
@@ -1581,11 +1581,11 @@
             <button data-mode="https">HTTPS</button>
           </div>
           <svg id="lockIcon" viewBox="0 0 64 64" fill="none">
-            <rect x="14" y="28" width="36" height="28" rx="4" fill="var(--paper-2)" stroke="var(--alert)"
+            <rect x="14" y="28" width="36" height="28" rx="4" fill="var(--paper-2)" stroke="var(--brick"
               stroke-width="2"></rect>
-            <path id="shackle" d="M20 28 V20 a12 12 0 0 1 24 0 v8" stroke="var(--alert)" stroke-width="3.4" fill="none"
+            <path id="shackle" d="M20 28 V20 a12 12 0 0 1 24 0 v8" stroke="var(--brick)" stroke-width="3.4" fill="none"
               stroke-linecap="round"></path>
-            <circle cx="32" cy="42" r="4" fill="var(--alert)"></circle>
+            <circle cx="32" cy="42" r="4" fill="var(--brick)"></circle>
           </svg>
           <div class="lock-status insecure" id="lockStatus">connessione non cifrata</div>
         </div>
@@ -1745,7 +1745,7 @@
                 clientStatus.className = 'cs-status err';
                 serverStatus.textContent = 'risorsa non trovata';
                 csLog.innerHTML = 'GET ' + path + ' &rarr; <span class="err">404 Not Found</span>';
-                csStage.innerHTML = '<div style="text-align:center"><h4 style="margin:4px 0 2px; font-family:var(--mono); font-size:22px; font-weight:700; color:var(--alert)">404</h4><p style="margin:0; font-size:14px; font-weight:600;">Pagina non trovata</p></div>';
+                csStage.innerHTML = '<div style="text-align:center"><h4 style="margin:4px 0 2px; font-family:var(--mono); font-size:22px; font-weight:700; color:var(--brick)">404</h4><p style="margin:0; font-size:14px; font-weight:600;">Pagina non trovata</p></div>';
               }
               csBusy = false;
               btnGood.disabled = false; btnBad.disabled = false;
@@ -1863,9 +1863,9 @@
 
         if (mode === 'https') {
           shackle.setAttribute('d', 'M20 24 V20 a12 12 0 0 1 24 0 v4');
-          shackle.setAttribute('stroke', 'var(--ok)');
-          lockBox.setAttribute('stroke', 'var(--ok)');
-          lockDot.setAttribute('fill', 'var(--ok)');
+          shackle.setAttribute('stroke', 'var(--blue)');
+          lockBox.setAttribute('stroke', 'var(--blue)');
+          lockDot.setAttribute('fill', 'var(--blue)');
           lockStatus.textContent = 'connessione cifrata';
           lockStatus.className = 'lock-status secure';
           httpsAddr.textContent = 'https://tuabanca.esempio.it/login';
@@ -1873,9 +1873,9 @@
           httpsCaption.textContent = 'Con HTTPS, i dati vengono cifrati prima dell\'invio: chi intercetta vede solo dati cifrati.';
         } else {
           shackle.setAttribute('d', 'M20 28 V20 a12 12 0 0 1 24 0 v8');
-          shackle.setAttribute('stroke', 'var(--alert)');
-          lockBox.setAttribute('stroke', 'var(--alert)');
-          lockDot.setAttribute('fill', 'var(--alert)');
+          shackle.setAttribute('stroke', 'var(--brick)');
+          lockBox.setAttribute('stroke', 'var(--brick)');
+          lockDot.setAttribute('fill', 'var(--brick)');
           lockStatus.textContent = 'connessione non cifrata';
           lockStatus.className = 'lock-status insecure';
           httpsAddr.textContent = 'http://tuabanca.esempio.it/login';
